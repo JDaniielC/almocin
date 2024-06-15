@@ -5,8 +5,8 @@ import MenuService from '../services/menu.service';
 import CategoryService from '../services/category.service';
 import CategoryController from '../controllers/category.controller';
 
-import PedidoService from '../services/pedido.service';
-import PedidoController from '../controllers/pedido.controller';
+import OrderService from '../services/order.service';
+import OrderController from '../controllers/order.controller';
 
 const router = Router();
 const prefix = '/api';
@@ -22,7 +22,7 @@ export default (app: Express) => {
   )
   app.use(
     `${prefix}`,
-    new PedidoController(router, di.getService(PedidoService)).router
+    new OrderController(router, di.getService(OrderService)).router
   )
   
   app.use((_, res) => {

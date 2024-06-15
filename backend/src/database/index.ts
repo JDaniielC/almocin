@@ -1,5 +1,5 @@
 import ItemMenuEntity from '../entities/item-menu.entity';
-import PedidoEntity from '../entities/pedido.entity';
+import OrderEntity from '../entities/order.entity';
 
 export default class Database {
   data: { [key: string]: any[] };
@@ -67,17 +67,17 @@ export default class Database {
         createdAt: new Date(),
         active: linkItemsCategories.includes(category.id) ?? Math.random() > 0.5
       })),
-      pedido: items.map((item, index) => new PedidoEntity({
-        id: `pedido-id-${index}`,
+
+      pedido: items.map((item, index) => new OrderEntity({
+        items:items,
         userID: "1",
+        id: `pedido-id-${index}`,
+        totalPrice: Math.floor(Math.random() * 10), // 0 - 9
         pedidoId:"1",
         status: "in makeing",
-        name: item,
-        items:items,
-        description: `Descrição do ${item}`,
-        totalPrice: Math.floor(Math.random() * 10), // 0 - 9
-        totalPrepareTime: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes
-        totalDeliveryTime: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes
+        totalDeliveryTime: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes,
+        cep: "12345-678",
+        address_number: Math.floor(Math.random() * 999) + 1, // 1 - 1000 address number
         createdAt: new Date(),
         active: Math.random() > 0.5, // 50%
       })),
