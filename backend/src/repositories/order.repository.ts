@@ -3,7 +3,7 @@ import BaseRepository from './base.repository';
 
 class OrderRepository extends BaseRepository<OrderEntity> {
   constructor() {
-    super('Order');
+    super('order');
   }
 
   public async getOrders(): Promise<OrderEntity[]> {

@@ -1,21 +1,20 @@
 import BaseEntity from "./base.entity";
+import { OrderStatus } from "../types/order";
 
 export default class OrderEntity extends BaseEntity {
-  items: string[];
+  itemsId: string[];
   userID: string;
   totalPrice: number;
-  pedidoId: string;
-  status:string;
+  status: OrderStatus;
   totalDeliveryTime: number;
   cep: string;
   address_number: number;
 
   constructor(data: OrderEntity) {
     super(data.id || '');
-    this.items = data.items;
+    this.itemsId = data.itemsId;
     this.userID = data.userID;
     this.totalPrice = data.totalPrice;
-    this.pedidoId = data.pedidoId;
     this.status = data.status;
     this.totalDeliveryTime = data.totalDeliveryTime;
     this.cep = data.cep;

@@ -3,7 +3,7 @@ import { Result, SuccessResult } from '../utils/result';
 import OrderService from '../services/order.service';
 
 class OrderController {
-  private prefix: string = '/pedido';
+  private prefix: string = '/order';
   public router: Router;
   private orderService: OrderService;
 

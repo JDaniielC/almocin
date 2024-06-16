@@ -19,7 +19,7 @@ class OrderService {
     const menu = await this.menuRepository.getItems();
     const model = entity.map((item) => new OrderModel({
       ...item,
-      items: menu.filter((i) => i.categoryID === item.id),
+      items: menu.filter(el => item.itemsId.includes(el.id)),
     }));
     return model;
   }
