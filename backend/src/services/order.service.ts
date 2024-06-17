@@ -1,21 +1,22 @@
 import OrderModel from '../models/order.model';
 import OrderRepository from '../repositories/order.repository';
 import MenuRepository from '../repositories/menu.repository';
+import OrderEntity from '../entities/order.entity';
 
 class OrderService {
-  private OrderRepository: OrderRepository;
+  private orderRepository: OrderRepository;
   private menuRepository: MenuRepository;
 
   constructor(
     orderRepository: OrderRepository,
     menuRepository: MenuRepository,
   ) {
-    this.OrderRepository = orderRepository;
+    this.orderRepository = orderRepository;
     this.menuRepository = menuRepository;
   }
 
   public async getOrders(): Promise<OrderModel[]> {
-    const entity = await this.OrderRepository.getOrders();
+    const entity = await this.orderRepository.getOrders();
     const menu = await this.menuRepository.getItems();
     const model = entity.map((item) => new OrderModel({
       ...item,
@@ -24,6 +25,15 @@ class OrderService {
     return model;
   }
 
+  public async createOrder(data: OrderEntity): Promise<OrderModel> {
+    const orderEntity = new OrderEntity(data);
+    const createdOrder = await this.orderRepository.createOrder(orderEntity);
+    const menu = await this.menuRepository.getItems();
+    return new OrderModel({
+      ...createdOrder,
+      items: menu.filter(el => createdOrder.itemsId.includes(el.id)),
+    });
+  }
 }
 
 export default OrderService;

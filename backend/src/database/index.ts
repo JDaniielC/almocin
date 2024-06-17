@@ -1,5 +1,6 @@
 import ItemMenuEntity from '../entities/item-menu.entity';
 import OrderEntity from '../entities/order.entity';
+import { OrderStatus } from '../types/order';
 
 export default class Database {
   data: { [key: string]: any[] };
@@ -69,12 +70,11 @@ export default class Database {
       })),
 
       pedido: items.map((item, index) => new OrderEntity({
-        items:items,
+        itemsId:items,
         userID: "1",
         id: `pedido-id-${index}`,
         totalPrice: Math.floor(Math.random() * 10), // 0 - 9
-        pedidoId:"1",
-        status: "in makeing",
+        status: OrderStatus.inProgress,
         totalDeliveryTime: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes,
         cep: "12345-678",
         address_number: Math.floor(Math.random() * 999) + 1, // 1 - 1000 address number
