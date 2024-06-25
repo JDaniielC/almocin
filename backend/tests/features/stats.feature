@@ -1,4 +1,4 @@
-eature: Statistics
+Feature: Statistics
 
    Scenario: requisitar todas as estatísticas
     Given há um objeto em "/stats":
