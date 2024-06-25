@@ -15,20 +15,10 @@ import app from '../app'; // Adjust the path as necessary
 
 const feature = loadFeature('path/to/stats.feature'); // Adjust the path as necessary
 
-defineFeature(feature, test => {
+defineFeature(feature, (scenario) => {
 
   let response: request.Response;
-
-  const stats = {
-    totalUsers: 100,
-    totalItems: 50,
-    totalRevenue: 10000,
-    currentMonthRevenue: 2000,
-    totalOrders: 150,
-    monthOrders: 20,
-    averageTicket: 66.67,
-    currentMonthAverageTicket: 100
-  };
+  let stats = StatsService();
 
   beforeAll(async () => {
     // Mock the repositories' behavior
@@ -40,7 +30,7 @@ defineFeature(feature, test => {
     jest.spyOn(require('../repositories/user.repository'), 'getUsers').mockResolvedValue(new Array(stats.totalUsers).fill({}));
   });
 
-  test('requisitar todas as estatísticas', ({ given, when, then }) => {
+  scenario('requisitar todas as estatísticas', ({ given, when, then }) => {
     given('há um objeto em "Estatistica":', (docString) => {
       // The object in docString is used for verification
     });
@@ -68,7 +58,7 @@ defineFeature(feature, test => {
     });
   });
 
-  test('requisitar as estatísticas de arrecadação', ({ given, when, then }) => {
+  scenario('requisitar as estatísticas de arrecadação', ({ given, when, then }) => {
     given('há um objeto em "Estatistica":', (docString) => {
       // The object in docString is used for verification
     });
@@ -92,7 +82,7 @@ defineFeature(feature, test => {
     });
   });
 
-  test('requisitar as estatísticas de mensais', ({ given, when, then }) => {
+  scenario('requisitar as estatísticas de mensais', ({ given, when, then }) => {
     given('há um objeto em "Estatistica":', (docString) => {
       // The object in docString is used for verification
     });
@@ -109,23 +99,10 @@ defineFeature(feature, test => {
       const expected = table.rowsHash();
       expect(response.body.data).toMatchObject({
         currentMonthRevenue: Number(expected.monthRevenue),
+        monthOrders: Number(expected.monthOrders),
         currentMonthAverageTicket: Number(expected.currentMonthAverageTicket)
       });
     });
   });
 
 });
-
-  }) => {
-    expect(response.status).toBe(200);
-  });
-
-  then('a resposta deve conter as seguintes informações:', (table) => {
-    const expected = table.rowsHash();
-    expect(response.body.data).toMatchObject({,
-      currentMonthRevenue: Number(expected.monthRevenue),
-      monthOrders: Number(expected.monthOrders),
-      currentMonthAverageTicket: Number(expected.currentMonthAverageTicket)
-    });
-  });
-}
