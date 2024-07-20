@@ -3,7 +3,6 @@ import CategoryPage from "./app/admin/pages/categoryPage";
 import UserPage from "./app/admin/pages/userPage";
 import MenuPage from "./app/admin/pages/menuPage";
 import AdminPage from "./app/admin/pages/adminPage";
-import StatsPage from "./app/admin/pages/statsPage";
 import RegisterPage from "./app/login/pages/registerPage";
 import LoginPage from "./app/login/pages/loginPage";
 import OrderPage from "./app/order/pages/orderPage";
@@ -49,10 +48,7 @@ const router = createBrowserRouter([
         path: 'categorias',
         Component: CategoryPage
       },
-      {
-        path: 'estatisticas',
-        Component: StatsPage
-      }
+      
     ]
   }
 ]);

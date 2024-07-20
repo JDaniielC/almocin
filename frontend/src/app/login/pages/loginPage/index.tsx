@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,15 +9,27 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LoginFormSchema, LoginFormType } from '../../forms/LoginForm';
+import { LoginContext } from '../../context/LoginContext/index'
 
 export default function LoginPage() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormType>({
+    resolver: zodResolver(LoginFormSchema),
+  });
+
+  // Acesso ao contexto de login
+  const { service } = useContext(LoginContext);
+
+  const onSubmit = async (data: LoginFormType) => {
+    try {
+      await service.login({ username: data.email, password: data.password });
+    
+    } catch (error) {
+
+      console.error('Erro ao fazer login:', error);
+    }
   };
 
   return (
@@ -36,26 +49,30 @@ export default function LoginPage() {
         <Typography component="h1" variant="h5">
           Entrar na conta
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
             label="Email"
-            name="email"
+            {...register('email')}
             autoComplete="email"
             autoFocus
+            error={!!errors.email}
+            helperText={errors.email?.message}
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
             label="Senha"
             type="password"
             id="password"
+            {...register('password')}
             autoComplete="current-password"
+            error={!!errors.password}
+            helperText={errors.password?.message}
           />
           <Button
             type="submit"
