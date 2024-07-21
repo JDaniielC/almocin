@@ -1,4 +1,5 @@
-import BaseLayout from "../../../admin/components/baseLayout";
+import BaseLayout from "../../../../shared/components/baseLayout";
+import { listItemUser } from "../../../../shared/types/base-layout-list-item";
 import { mockOrders } from "../../../../shared/types/mockorder";
 import { mockItems } from "../../../../shared/types/mockorder";
 
@@ -7,8 +8,8 @@ import styles from './index.module.css';
 
 const HistoryPage = () => {
   return (
-    <BaseLayout titlePage="historico">
-    
+    <BaseLayout titlePage="historico" listItem={listItemUser}>
+
       <ul >
         <div>
             {mockOrders.map((order, index) => (
@@ -23,11 +24,11 @@ const HistoryPage = () => {
                       <p>CEP: {order.cep}</p>
                       <p>Address Number: {order.address_number}</p>
                     </div>
-                    
+
                     <div className="list-elem-right">
                       <img className="orderImage" src={mockItems.filter((item) => item.id==order.itemsId[0])[0].image}/>
                     </div>
-                      
+
                   </li>
               </div>
             ))}
@@ -35,7 +36,7 @@ const HistoryPage = () => {
 
       </ul>
     </BaseLayout>
-    
+
   );
 }
 

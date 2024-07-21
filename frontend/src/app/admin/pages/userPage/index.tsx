@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.css";
 import LoadingComponent from "../../../../shared/components/Loading";
 import { UserContext } from "../../context/userContext";
-import BaseLayout from "../../components/baseLayout";
+import BaseLayout from "../../../../shared/components/baseLayout";
+import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
 import ListItem from "../../components/listItem";
 
 const UserPage = () => {
@@ -28,7 +29,7 @@ const UserPage = () => {
   [service,state.deleteUserRequestStatus]);
 
   return (
-    <BaseLayout titlePage="Usuários">
+    <BaseLayout titlePage="Usuários" listItem={listItemAdmin}>
       <div className={styles.listContainer}>
         {state.getUsersRequestStatus.maybeMap({
           loading: () => <LoadingComponent></LoadingComponent>,

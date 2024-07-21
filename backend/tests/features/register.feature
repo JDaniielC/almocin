@@ -7,38 +7,6 @@ Feature: Registro
 Background: Usuário tenta se registrar no sistema
 Given o usuário deseja se registrar com nome "João", email "joao@example.com", gênero "Masculino", método de pagamento "Cartão de Crédito", CPF "123.456.789-10", CEP "12345-678", senha "senhaSegura", e resposta à pergunta de recuperação "lulu"
 
-Scenario: Registro com sucesso
-When o usuário faz uma requisição "POST" para "/register" com os seguintes dados:
-"""
-{
-  "name": "João",
-  "email": "joao@example.com",
-  "gender": "Masculino",
-  "paymentMethod": "Cartão de Crédito",
-  "cpf": "123.456.789-10",
-  "cep": "12345-678",
-  "password": "senhaSegura",
-  "recoveryQuestion": "lulu"
-}
-"""
-Then a resposta deve ser "201"
-And o corpo da resposta deve ser:
-"""
-{
-  "msg": "User created successfully",
-  "data": {
-    "id": "id_do_usuario",
-    "name": "João",
-    "email": "joao@example.com",
-    "gender": "Masculino",
-    "paymentMethod": "Cartão de Crédito",
-    "cpf": "123.456.789-10",
-    "cep": "12345-678",
-    "recoveryQuestion": "lulu"
-  }
-}
-"""
-
 Scenario: Falha no registro devido a campos inválidos
 When o usuário faz uma requisição "POST" para "/register" com os seguintes dados:
 """

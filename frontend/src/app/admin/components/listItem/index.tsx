@@ -1,4 +1,4 @@
-import { ListItemProps } from '../../types/components-props';
+import { ListItemProps } from '../../../../shared/types/components-props';
 import styles from './index.module.css';
 
 const ListItem = ({

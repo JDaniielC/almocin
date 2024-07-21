@@ -1,10 +1,10 @@
 import { Dispatch } from "react";
 import { MenuStateAction, MenuStateType } from "./types";
-import { ApiService } from "../../../../shared/services/ApiService";
-import { MenuFormType } from "../../forms/MenuForm";
-import { AppUnknownError } from "../../../../shared/errors/app-error";
-import RequestStatus from "../../../../shared/types/request-status";
-import ItemMenuModel from "../../models/ItemMenuModel";
+import { ApiService } from "../../services/ApiService";
+import { MenuFormType } from "../../../app/admin/forms/MenuForm";
+import { AppUnknownError } from "../../errors/app-error";
+import RequestStatus from "../../types/request-status";
+import ItemMenuModel from "../../../app/admin/models/ItemMenuModel";
 
 export default class MenuService {
   private apiService: ApiService;

@@ -6,7 +6,8 @@ import { CategoryContext } from "../../context/CategoryContext";
 import LoadingComponent from "../../../../shared/components/Loading";
 import Modal from "../../../../shared/components/model";
 import ListItem from "../../components/listItem";
-import BaseLayout from "../../components/baseLayout";
+import BaseLayout from "../../../../shared/components/baseLayout";
+import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
 
 const CategoryPage = () => {
   const { service, state } = useContext(CategoryContext);
@@ -86,7 +87,7 @@ const CategoryPage = () => {
   ]);
 
   return (
-    <BaseLayout titlePage="Categorias">
+    <BaseLayout titlePage="Categorias" listItem={listItemAdmin}>
       <div className={styles.listContainer}>
         {state.getCategoriesRequestStatus.maybeMap({
           loading: () => <LoadingComponent></LoadingComponent>,

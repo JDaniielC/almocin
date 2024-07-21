@@ -1,8 +1,9 @@
-import BaseLayout from "../../components/baseLayout";
+import BaseLayout from "../../../../shared/components/baseLayout";
+import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
 
 const AdminPage = () => {
   return (
-    <BaseLayout titlePage="Administração do Almocin">
+    <BaseLayout titlePage="Administração do Almocin" listItem={listItemAdmin}>
       <h3>Seja bem-vindo ao painel de administração do Almocin!</h3>
       <br />
       <p>

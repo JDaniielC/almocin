@@ -1,11 +1,12 @@
 import { mockItems, mockOrders, mockOrderStatus } from "../../../../shared/types/mockorder";
-import BaseLayout from "../../../admin/components/baseLayout";
+import BaseLayout from "../../../../shared/components/baseLayout";
 import styles from "./index.module.css"
+import { listItemUser } from "../../../../shared/types/base-layout-list-item";
 
 const OrderPage = () => {
   const inProgressOrders = mockOrders.filter((order)=> order.status === mockOrderStatus.inProgress);
   return (
-    <BaseLayout titlePage="order">
+    <BaseLayout titlePage="order" listItem={listItemUser}>
       <ul >
         <div>
             {inProgressOrders.map((order, index) => (
@@ -34,25 +35,25 @@ const OrderPage = () => {
                         );
                       })}
                     </div>
-                    
+
                     <div>
                       <div>
                         <p>total price: </p>
                       </div>
-                  
+
                       <div className={styles.summaryButtons}>
                         <button className={styles.cancelButton}>
                           cancelar
                         </button>
                     </div>
-                    </div> 
+                    </div>
 
                   </li>
               </div>
             ))}
-        
 
-        
+
+
       </div>
       </ul>
     </BaseLayout>

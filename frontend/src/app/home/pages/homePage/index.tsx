@@ -1,21 +1,23 @@
-import { useContext, useEffect } from "react";
+import BaseLayout from "../../../../shared/components/baseLayout";
 import styles from "./index.module.css";
 import LoadingComponent from "../../../../shared/components/Loading";
-import BaseLayout from "../../../../shared/components/baseLayout";
-import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
-import { MenuContext } from "../../../../shared/context/menuContext";
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { useContext, useEffect } from "react";
+import { MenuContext } from "../../../../shared/context/menuContext";
+import { listItemUser } from "../../../../shared/types/base-layout-list-item";
 
-const MenuPage = () => {
+const HomePage = () => {
   const {service, state} = useContext(MenuContext);
 
- useEffect(() => {
-    service.getItems()
-  }, 
-  [service]);
+  useEffect(() => {
+     service.getItems()
+   }, 
+   [service]);
 
   return (
-    <BaseLayout titlePage="Cardápio" listItem={listItemAdmin}>
+    <BaseLayout titlePage="Cardápio" listItem={listItemUser}>
+      <h1>Bem-vindo ao AlmoCIn!</h1>
+
       <div className={styles.listContainer}>
         {state.getItemsRequestStatus.maybeMap({
           loading: () => <LoadingComponent></LoadingComponent>,
@@ -57,4 +59,4 @@ const MenuPage = () => {
   );
 };
 
-export default MenuPage;
+export default HomePage;

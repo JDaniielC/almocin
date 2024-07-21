@@ -1,6 +1,7 @@
 import { mockItems, mockOrders, mockOrderStatus } from "../../../../shared/types/mockorder";
-import BaseLayout from "../../../admin/components/baseLayout";
+import BaseLayout from "../../../../shared/components/baseLayout";
 import styles from "./index.module.css"
+import { listItemUser } from "../../../../shared/types/base-layout-list-item";
 
 const CartPage = () => {
   const cartOrders = mockOrders.filter((order)=> order.status === mockOrderStatus.inCart);
@@ -9,7 +10,7 @@ const CartPage = () => {
 
 
   return (
-    <BaseLayout titlePage="cart">
+    <BaseLayout titlePage="cart" listItem={listItemUser}>
       <ul >
         <div>
             {Items.map((item, index) => (
@@ -22,7 +23,7 @@ const CartPage = () => {
                       <p>Price: ${item.price}</p>
 
                     </div>
-                    
+
                     <div className="list-elem-right">
                       <img className="orderImage" src={item.image}/>
                     </div>
@@ -35,7 +36,7 @@ const CartPage = () => {
           <div>
             <p>total price: </p>
           </div>
-      
+
           <div className={styles.summaryButtons}>
             <button className={styles.confirmButton}>
               confirmar
@@ -44,14 +45,14 @@ const CartPage = () => {
             <button className={styles.cancelButton}>
               cancelar
             </button>
-        </div>        
+        </div>
       </div>
       </ul>
-        
-      
-        
+
+
+
     </BaseLayout>
-    
+
   );
 }
 export default CartPage;

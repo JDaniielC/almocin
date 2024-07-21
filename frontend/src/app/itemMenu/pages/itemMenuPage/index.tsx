@@ -2,20 +2,20 @@ import { useContext, useEffect } from "react";
 import styles from "./index.module.css";
 import LoadingComponent from "../../../../shared/components/Loading";
 import BaseLayout from "../../../../shared/components/baseLayout";
-import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
 import { MenuContext } from "../../../../shared/context/menuContext";
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { listItemUser } from "../../../../shared/types/base-layout-list-item";
 
-const MenuPage = () => {
+const ItemMenuPage = () => {
   const {service, state} = useContext(MenuContext);
 
- useEffect(() => {
+  useEffect(() => {
     service.getItems()
   }, 
   [service]);
 
   return (
-    <BaseLayout titlePage="Cardápio" listItem={listItemAdmin}>
+    <BaseLayout titlePage="Cardápio" listItem={listItemUser}>
       <div className={styles.listContainer}>
         {state.getItemsRequestStatus.maybeMap({
           loading: () => <LoadingComponent></LoadingComponent>,
@@ -57,4 +57,4 @@ const MenuPage = () => {
   );
 };
 
-export default MenuPage;
+export default ItemMenuPage;
