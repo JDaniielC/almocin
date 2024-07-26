@@ -4,9 +4,9 @@ import { CategoryContext } from "../../context/CategoryContext";
 
 
 import LoadingComponent from "../../../../shared/components/Loading";
-import Modal from "../../../../shared/components/model";
+import Modal from "../../../../shared/components/Modal";
 import ListItem from "../../components/listItem";
-import BaseLayout from "../../../../shared/components/baseLayout";
+import BaseLayout from "../../../../shared/components/BaseLayout";
 import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
 
 const CategoryPage = () => {

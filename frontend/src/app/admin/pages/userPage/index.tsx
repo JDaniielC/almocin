@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./index.module.css";
 import LoadingComponent from "../../../../shared/components/Loading";
 import { UserContext } from "../../context/userContext";
-import BaseLayout from "../../../../shared/components/baseLayout";
+import BaseLayout from "../../../../shared/components/BaseLayout";
 import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
 import ListItem from "../../components/listItem";
 

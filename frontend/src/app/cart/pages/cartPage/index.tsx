@@ -1,5 +1,5 @@
 import { mockItems, mockOrders, mockOrderStatus } from "../../../../shared/types/mockorder";
-import BaseLayout from "../../../../shared/components/baseLayout";
+import BaseLayout from "../../../../shared/components/BaseLayout";
 import styles from "./index.module.css"
 import { listItemUser } from "../../../../shared/types/base-layout-list-item";
 
