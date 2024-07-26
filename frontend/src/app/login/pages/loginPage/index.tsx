@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,26 +10,26 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginFormSchema, LoginFormType } from '../../forms/LoginForm';
-import { LoginContext } from '../../context/LoginContext/index'
+import { useContext } from 'react';
+import { LoginContext } from '../../context/LoginContext/index';
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormType>({
     resolver: zodResolver(LoginFormSchema),
   });
 
-  // Acesso ao contexto de login
   const { service } = useContext(LoginContext);
 
-  const onSubmit = async (data: LoginFormType) => {
-    try {
-      await service.login({ username: data.email, password: data.password });
-    
-    } catch (error) {
-
-      console.error('Erro ao fazer login:', error);
+  const onSubmit: SubmitHandler<LoginFormType> = async data => {
+    if (service) {
+      try {
+        await service.login(data); // Utilizando os dados diretamente
+        // Redirecionar ou notificar usuário após sucesso
+      } catch (error) {
+        console.error('Login falhou:', error);
+        // Exibir mensagem de erro ou notificar usuário
+      }
     }
   };
 
@@ -56,11 +57,11 @@ export default function LoginPage() {
             fullWidth
             id="email"
             label="Email"
-            {...register('email')}
             autoComplete="email"
             autoFocus
+            {...register('email')}
             error={!!errors.email}
-            helperText={errors.email?.message}
+            helperText={errors.email ? errors.email.message : ''}
           />
           <TextField
             margin="normal"
@@ -69,10 +70,10 @@ export default function LoginPage() {
             label="Senha"
             type="password"
             id="password"
-            {...register('password')}
             autoComplete="current-password"
+            {...register('password')}
             error={!!errors.password}
-            helperText={errors.password?.message}
+            helperText={errors.password ? errors.password.message : ''}
           />
           <Button
             type="submit"

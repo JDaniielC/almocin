@@ -5,6 +5,7 @@ import MenuPage from "./app/admin/pages/menuPage";
 import AdminPage from "./app/admin/pages/adminPage";
 import RegisterPage from "./app/login/pages/registerPage";
 import LoginPage from "./app/login/pages/loginPage";
+import ForgotPasswordPage from "./app/login/pages/forgotPasswordPage"; // Importar a página
 import HomePage from "./app/home/pages/homePage";
 import ItemMenuPage from "./app/itemMenu/pages/itemMenuPage";
 import OrderPage from "./app/order/pages/orderPage";
@@ -15,9 +16,10 @@ const router = createBrowserRouter([
   {
     path: "*",
     Component: LoginPage,
-  },{
-    path:"order",
-    Component:OrderPage,
+  },
+  {
+    path: "order",
+    Component: OrderPage,
   },
   {
     path: "/home",
@@ -28,39 +30,42 @@ const router = createBrowserRouter([
     Component: RegisterPage,
   },
   {
-    path:"/cart",
-    Component: CartPage
+    path: "/forgot-password",
+    Component: ForgotPasswordPage, 
   },
   {
-    path:"/history",
-    Component: HistoryPage
+    path: "/cart",
+    Component: CartPage,
+  },
+  {
+    path: "/history",
+    Component: HistoryPage,
   },
   {
     path: '/adm',
     children: [
       {
         path: '',
-        Component: AdminPage
+        Component: AdminPage,
       },
       {
         path: 'cardapio',
-        Component: MenuPage
+        Component: MenuPage,
       },
       {
         path: 'usuarios',
-        Component: UserPage
+        Component: UserPage,
       },
       {
         path: 'categorias',
-        Component: CategoryPage
+        Component: CategoryPage,
       },
-      
-    ]
+    ],
   },
   {
     path: "/menu",
-    Component: ItemMenuPage
-  }
+    Component: ItemMenuPage,
+  },
 ]);
 
 export default function App() {

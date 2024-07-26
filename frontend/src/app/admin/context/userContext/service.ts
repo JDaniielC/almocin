@@ -158,4 +158,3 @@ export default class UserService {
     }
   }
 }
-

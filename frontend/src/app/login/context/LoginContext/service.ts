@@ -1,8 +1,8 @@
 import { Dispatch } from "react";
 import { LoginStateAction, LoginStateType } from "./types";
 import { ApiService } from "../../../../shared/services/ApiService";
+import { LoginFormType } from "../../forms/LoginForm";
 import RequestStatus from "../../../../shared/types/request-status";
-import { LoginResponse } from "../../models/LoginModel";
 
 export default class LoginService {
   private apiService: ApiService;
@@ -20,18 +20,17 @@ export default class LoginService {
     this.dispatch = dispatch;
   }
 
-  async login(credentials: { username: string; password: string }): Promise<void> {
+  async login(credentials: LoginFormType): Promise<void> {
     this.dispatch({
       type: LoginStateType.LOGIN,
       payload: RequestStatus.loading(),
     });
 
-
     const result = await this.apiService.post(this.prefix, credentials);
 
     result.handle({
       onSuccess: (response) => {
-        const responseData = response.data as LoginResponse;
+        const responseData = response.data;
         this.dispatch({
           type: LoginStateType.LOGIN,
           payload: RequestStatus.success(responseData),
@@ -40,31 +39,6 @@ export default class LoginService {
       onFailure: (error) => {
         this.dispatch({
           type: LoginStateType.LOGIN,
-          payload: RequestStatus.failure(error),
-        });
-      },
-    });
-  }
-
-  async checkAuthStatus(): Promise<void> {
-    this.dispatch({
-      type: LoginStateType.AUTH_STATUS,
-      payload: RequestStatus.loading(),
-    });
-
-    const result = await this.apiService.get(`${this.prefix}/status`);
-
-    result.handle({
-      onSuccess: (response) => {
-        const responseData = response.data as LoginResponse;
-        this.dispatch({
-          type: LoginStateType.AUTH_STATUS,
-          payload: RequestStatus.success(responseData),
-        });
-      },
-      onFailure: (error) => {
-        this.dispatch({
-          type: LoginStateType.AUTH_STATUS,
           payload: RequestStatus.failure(error),
         });
       },
@@ -77,14 +51,13 @@ export default class LoginService {
       payload: RequestStatus.loading(),
     });
 
-    // Correção: forneça tanto a URL quanto o corpo da requisição
     const result = await this.apiService.post(`${this.prefix}/logout`, {});
 
     result.handle({
-      onSuccess: () => {
+      onSuccess: (response) => {
         this.dispatch({
           type: LoginStateType.LOGOUT,
-          payload: RequestStatus.success(undefined),
+          payload: RequestStatus.success(response.data),
         });
       },
       onFailure: (error) => {
