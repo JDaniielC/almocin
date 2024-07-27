@@ -45,6 +45,7 @@ export default function LoginPage() {
             label="Email"
             name="email"
             autoComplete="email"
+            data-cy="login"
             autoFocus
           />
           <TextField
@@ -55,12 +56,14 @@ export default function LoginPage() {
             label="Senha"
             type="password"
             id="password"
+            data-cy="password"
             autoComplete="current-password"
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
+            data-cy="submit-login"
             sx={{ mt: 3, mb: 2 }}
           >
             Entrar
