@@ -1,4 +1,4 @@
-import BaseLayout from "../../../../shared/components/baseLayout";
+import BaseLayout from "../../../../shared/components/BaseLayout";
 import styles from "./index.module.css";
 import LoadingComponent from "../../../../shared/components/Loading";
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";

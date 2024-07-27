@@ -1,4 +1,4 @@
-import BaseLayout from "../../../../shared/components/baseLayout";
+import BaseLayout from "../../../../shared/components/BaseLayout";
 import { listItemUser } from "../../../../shared/types/base-layout-list-item";
 import { mockOrders } from "../../../../shared/types/mockorder";
 import { mockItems } from "../../../../shared/types/mockorder";

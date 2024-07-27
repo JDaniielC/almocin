@@ -1,4 +1,4 @@
-import BaseLayout from "../../../../shared/components/baseLayout";
+import BaseLayout from "../../../../shared/components/BaseLayout";
 import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
 
 const AdminPage = () => {

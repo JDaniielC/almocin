@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import styles from "./index.module.css";
 import LoadingComponent from "../../../../shared/components/Loading";
-import BaseLayout from "../../../../shared/components/baseLayout";
+import BaseLayout from "../../../../shared/components/BaseLayout";
 import { StatsContext } from "../../context/statsContext/index";
 import { StatsFilter } from "../../context/statsContext/types";
 import { Table, TableHead, TableRow, TableCell, TableBody, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
