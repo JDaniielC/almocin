@@ -95,11 +95,14 @@ const OrderPage = () => {
           ),
           succeeded: (orders) => (
             <>
-              {orders.map((order) => {
+              {orders.filter((order)=>(order.status===OrderStatus.inProgress)).map((order) => {
                 return (
                   <ListOrder
                     key={order.id}
                     name={order.id}
+                    totalPrice={order.totalPrice.toString()}
+                    timeToDelivery={order.totalDeliveryTime.toString()}
+                    items={order.itemsId}
                     editButtonCallback={onEditOrder(order.id, OrderStatus.canceled)}
                     editDisabled={createOrEdit == 'edit' && order.id !== orderToEdit}
                   ></ListOrder>
@@ -110,21 +113,8 @@ const OrderPage = () => {
         })}
       </div>
       <br />
-      <div className={styles.buttons}>
-        <input
-          onChange={onChangeNewOrderStatus}
-          value={newOrderStatus}
-          className={styles.createInput}
-          placeholder="Nome da nova categoria"
-        ></input>
-        {
-          <button 
-            className={styles.createButton}
-            name={'Editar categoria'}
-            onClick={editOrder()}
-          >Editar Categoria</button>
-        }
-      </div>
+
+      
       {showLoading && <LoadingComponent></LoadingComponent>}
       <Modal
         open={errorMsg !== ''}
