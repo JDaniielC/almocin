@@ -1,3 +1,4 @@
+/*
 import { StatsFilter } from "./types";
 
 export const fetchStats = async (filter: StatsFilter, token: string) => {
@@ -14,3 +15,4 @@ export const fetchStats = async (filter: StatsFilter, token: string) => {
     throw error;
   }
 };
+*/

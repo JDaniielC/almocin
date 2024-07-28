@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useMemo, ReactNode, Dispatch } from "react";
+/*import { createContext, useReducer, useMemo, ReactNode, Dispatch } from "react";
 import { StatsState, StatsAction } from "./types";
 import { statsReducer, initialState } from "./reducer";
 
@@ -20,3 +20,4 @@ const StatsProvider = ({ children }: { children: ReactNode }) => {
 
 export { StatsContext, StatsProvider };
 
+*/

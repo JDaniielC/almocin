@@ -1,3 +1,4 @@
+/*
 import { StatsState, StatsAction, StatsFilter } from "./types";
 
 export const initialState: StatsState = {
@@ -20,3 +21,4 @@ export const statsReducer = (state: StatsState, action: StatsAction): StatsState
       return state;
   }
 };
+*/

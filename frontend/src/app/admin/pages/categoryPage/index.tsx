@@ -17,6 +17,7 @@ const CategoryPage = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [showLoading, setShowLoading] = useState(false);
 
+
   function createCategory() {
     return () => {
       if (!newCategoryName) return;
