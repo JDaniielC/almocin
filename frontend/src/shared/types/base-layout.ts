@@ -15,7 +15,6 @@ export const listItemAdmin = [
 
 export const listItemUser = [
     { text: "Boas vindas", icon: DashboardIcon, url: "/" },
-    { text: "Cardápio", icon: ShoppingCartIcon, url: "/cardapio" },
     { text: "Histórico", icon: HistoryIcon, url: "/historico" },
     { text: "Carrinho", icon: ShoppingCartIcon, url: "/carrinho" },
     { text: "Pedido", icon: ShoppingCartIcon, url: "/pedido" },
