@@ -14,6 +14,7 @@ const Modal = ({ children, className, open, title, closeButtonCallback }: {
       className={`${styles.modal} ${open ? styles.activeModal : ''} ${className} `}
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
+      role="dialog"
     >
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>

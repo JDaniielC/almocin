@@ -1,9 +1,9 @@
 import { createContext, useReducer, useMemo } from "react";
 import MenuService from "./service";
 import menuStateReducer from "./reducer";
-import { ApiService } from "../../../../shared/services/ApiService";
-import RequestStatus from "../../../../shared/types/request-status";
-import usePrevious from "../../../../shared/hooks/usePrevious";
+import { ApiService } from "../../services/ApiService";
+import RequestStatus from "../../types/request-status";
+import usePrevious from "../../hooks/usePrevious";
 import { MenuContextProps, MenuProviderProps } from "./types";
 
 export const MenuContext = createContext<MenuContextProps>(

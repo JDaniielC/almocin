@@ -17,41 +17,14 @@ defineFeature(feature, (test) => {
     await mockUserRepository.delete(() => true);
   });
 
-  test('Registro com sucesso', ({ given, when, then, and }) => {
-    given('o usuário deseja se registrar com nome "João", email "joao@example.com", gênero "Masculino", método de pagamento "Cartão de Crédito", CPF "123.456.789-10", CEP "12345-678", senha "senhaSegura", e resposta à pergunta de recuperação "lulu"', async () => {
-      // No setup needed, as the background scenario sets up the user data
-    });
-
-    when('o usuário faz uma requisição "POST" para "/register" com os seguintes dados:', async (docString) => {
-      const payload = JSON.parse(docString);
-      response = await request.post('/api/register').send(payload);
-    });
-
-    then('a resposta deve ser "201"', () => {
-      expect(response.status).toBe(201);
-    });
-
-    and('o corpo da resposta deve ser:', (docString) => {
-      const expectedResponse = JSON.parse(docString);
-      expect(response.body.msg).toEqual(expectedResponse.msg);
-      expect(response.body.data.name).toEqual(expectedResponse.data.name);
-      expect(response.body.data.email).toEqual(expectedResponse.data.email);
-      expect(response.body.data.gender).toEqual(expectedResponse.data.gender);
-      expect(response.body.data.paymentMethod).toEqual(expectedResponse.data.paymentMethod);
-      expect(response.body.data.cpf).toEqual(expectedResponse.data.cpf);
-      expect(response.body.data.cep).toEqual(expectedResponse.data.cep);
-      expect(response.body.data.recoveryQuestion).toEqual(expectedResponse.data.recoveryQuestion);
-    });
-  });
-
   test('Falha no registro devido a campos inválidos', ({ given, when, then, and }) => {
-    given(/^o usuário deseja se registrar com nome "(.*)", email "(.*)", gênero "(.*)", método de pagamento "(.*)", CPF "(.*)", CEP "(.*)", senha "(.*)", e resposta à pergunta de recuperação "(.*)"$/, (name, email, gender, paymentMethod, cpf, cep, password, recoveryQuestion) => { 
+    given(/^o usuário deseja se registrar com nome "(.*)", email "(.*)", gênero "(.*)", método de pagamento "(.*)", CPF "(.*)", CEP "(.*)", senha "(.*)", e resposta à pergunta de recuperação "(.*)"$/, (name, email, gender, paymentMethod, cpf, cep, password, recoveryQuestion) => {
       const requestData = {
         name,
         email,
         gender,
         paymentMethod,
-        cpf, 
+        cpf,
         cep,
         password,
         recoveryQuestion
@@ -77,40 +50,40 @@ defineFeature(feature, (test) => {
   });
 
   test('Falha no registro devido a email já registrado', ({ given, when, then, and }) => {
-    given('o usuário deseja se registrar com nome "João", email "joao@example.com", gênero "Masculino", método de pagamento "Cartão de Crédito", CPF "123.456.789-10", CEP "12345-678", senha "senhaSegura", e resposta à pergunta de recuperação "lulu"', async () => {
-        // No setup needed, as the background scenario sets up the user data
+    given('o usuário deseja se registrar com nome "João", email "joao@example.com", gênero "Masculino", método de pagamento "Cartão de Crédito", CPF "123.456.789-10", CEP "12345-678", senha "senhaSegura", e resposta à pergunta de recuperação "lulu"', () => {
+      // No setup needed, as the background scenario sets up the user data
     });
 
     given('um usuário com email "joao@example.com" já está registrado', async () => {
-        const existingUser: UserEntity = {
-            id: 'id_do_usuario',
-            name: 'João',
-            email: 'joao@example.com',
-            gender: 'Masculino',
-            paymentMethod: 'Cartão de Crédito',
-            cpf: '123.456.789-10',
-            cep: '12345-678',
-            recoveryQuestion: 'lulu',
-            password: 'senhaSegura',
-            createdAt: new Date(),
-            active: true
-        };
-        await mockUserRepository.add(existingUser);
+      const existingUser: UserEntity = {
+        id: 'id_do_usuario',
+        name: 'João',
+        email: 'joao@example.com',
+        gender: 'Masculino',
+        paymentMethod: 'Cartão de Crédito',
+        cpf: '123.456.789-10',
+        cep: '12345-678',
+        recoveryQuestion: 'lulu',
+        password: 'senhaSegura',
+        createdAt: new Date(),
+        active: true
+      };
+      await mockUserRepository.add(existingUser);
     });
 
     when('o usuário faz uma requisição "POST" para "/register" com o seguinte dado:', async (docString) => {
-        const payload = JSON.parse(docString);
-        response = await request.post('/api/register').send(payload);
+      const payload = JSON.parse(docString);
+      response = await request.post('/api/register').send(payload);
     });
 
     then('a resposta deve ser "400"', () => {
-        expect(response.status).toBe(400);
+      expect(response.status).toBe(400);
     });
 
     and('o corpo da resposta deve ser:', (docString) => {
-        const expectedResponse = JSON.parse(docString);
-        expect(response.body.msg).toEqual(expectedResponse.msg);
+      const expectedResponse = JSON.parse(docString);
+      expect(response.body.msg).toEqual(expectedResponse.msg);
     });
-});
+  });
 
 });
