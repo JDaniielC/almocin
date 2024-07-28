@@ -1,13 +1,13 @@
 import { SvgIconComponent } from "@mui/icons-material";
 
-export interface ListItemProps {
+export interface ListOrderProps {
   name: string;
-  deleteBtnCallback: () => void;
-  deleteDisabled?: boolean;
+  totalPrice: string;
+  timeToDelivery: string;
+  items: string[];
   editButtonCallback?: () => void;
   editDisabled?: boolean;
 }
-
 export interface BaseLayoutListItemProps {
   text: string;
   icon: SvgIconComponent;

@@ -1,63 +1,130 @@
-import { mockItems, mockOrders, mockOrderStatus } from "../../../../shared/types/mockorder";
-import BaseLayout from "../../../../shared/components/BaseLayout";
-import styles from "./index.module.css"
-import { listItemUser } from "../../../../shared/types/base-layout-list-item";
+import { useCallback, useContext, useEffect, useState } from "react";
+import styles from "./index.module.css";
+import { OrderContext } from "../../../admin/context/OrderContext";
+
+
+import LoadingComponent from "../../../../shared/components/Loading";
+import Modal from "../../../../shared/components/model";
+import ListOrder from "../../../admin/components/listorder";
+import BaseLayout from "../../../admin/components/baseLayout";
+import { OrderStatus } from "../../../../shared/types/order";
 
 const OrderPage = () => {
-  const inProgressOrders = mockOrders.filter((order)=> order.status === mockOrderStatus.inProgress);
+  const { service, state } = useContext(OrderContext);
+  const [createOrEdit, setCreateOrEdit] = useState<"create" | "edit">("create");
+  const [orderToEdit, setOrderToEdit] = useState<string | null>(null);
+  const [newOrderStatus, setNewOrderStatus] = useState(OrderStatus.inProgress);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showLoading, setShowLoading] = useState(false);
+
+
+  function createOrder() {
+    return () => {
+      if (!newOrderStatus) return;
+      service.createOrder({ status: newOrderStatus });
+    }
+  }
+
+  const onChangeNewOrderStatus = useCallback((event) => {
+    setNewOrderStatus(event.target.value);
+  }, []);
+
+  const closeModalAlert = useCallback(() => {
+    setErrorMsg('');
+  }, []);
+
+  function editOrder() {
+    return () => {
+      if (!orderToEdit) return;
+      service.updateOrder(orderToEdit, { status: newOrderStatus })
+    };
+  }
+
+  function onEditOrder(orderId: string, orderStatus: OrderStatus) {
+    return () => {
+      if (createOrEdit === 'edit' && orderToEdit === orderId) {
+        setCreateOrEdit("create");
+        setOrderToEdit(null);
+        setNewOrderStatus(OrderStatus.canceled);
+        return;
+      }
+      setOrderToEdit(orderId);
+      setNewOrderStatus(orderStatus);
+      setCreateOrEdit("edit");
+    };
+  }
+
+
+  useEffect(() => {
+    service.getOrders()
+
+    function loading() {
+      setShowLoading(true)
+      setTimeout(() => {
+        setShowLoading(false) 
+      }, 1000);
+    }
+
+    state.createOrderRequestStatus.maybeMap({
+      failed: (error) => setErrorMsg(error.message),
+      loading: () => loading()
+    })
+    state.updateOrderRequestStatus.maybeMap({
+      failed: (error) => setErrorMsg(error.message),
+      loading: () => loading()
+    })
+  }, 
+  [service,
+    state.updateOrderRequestStatus,
+    state.createOrderRequestStatus
+  ]);
+
   return (
-    <BaseLayout titlePage="order" listItem={listItemUser}>
-      <ul >
-        <div>
-            {inProgressOrders.map((order, index) => (
-              <div key={index}>
-                  <li className={styles.orderPanel}>
-                    <div className={styles.orderInfo}>
-                      <p> id: {order.id}</p>
-                      <p> delivery time: {order.totalDeliveryTime}</p>
-                      <p> user id: {order.userID}</p>
-                      <p>total Price: ${order.totalPrice}</p>
-                    </div>
-
-                    <div className={styles.itemInfo}>
-                      {order.itemsId.map((itemId) => {
-                        const item = mockItems.find((el) => el.id === itemId);
-                        return item ? (
-                          <div key={item.id} className={styles.itemInfo}>
-                            <p>{item.name}</p>
-                            <p>price: ${item.price}</p>
-                            <img src={item.image}  />
-                          </div>
-                        ) : (
-                          <div key={itemId} >
-                            <p>Item not found</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div>
-                      <div>
-                        <p>total price: </p>
-                      </div>
-
-                      <div className={styles.summaryButtons}>
-                        <button className={styles.cancelButton}>
-                          cancelar
-                        </button>
-                    </div>
-                    </div>
-
-                  </li>
-              </div>
-            ))}
-
-
-
+    <BaseLayout titlePage="Pedidos">
+      <div className={styles.listContainer}>
+        {state.getOrdersRequestStatus.maybeMap({
+          loading: () => <LoadingComponent></LoadingComponent>,
+          failed: () => (
+            <Modal
+              open={true}
+              title="Ocorreu um erro inesperado."
+              closeButtonCallback={closeModalAlert}
+            >
+              <span>Erro ao carregar as categorias!</span>
+            </Modal>
+          ),
+          succeeded: (orders) => (
+            <>
+              {orders.filter((order)=>(order.status===OrderStatus.inProgress)).map((order) => {
+                return (
+                  <ListOrder
+                    key={order.id}
+                    name={order.id}
+                    totalPrice={order.totalPrice.toString()}
+                    timeToDelivery={order.totalDeliveryTime.toString()}
+                    items={order.itemsId}
+                    editButtonCallback={onEditOrder(order.id, OrderStatus.canceled)}
+                    editDisabled={createOrEdit == 'edit' && order.id !== orderToEdit}
+                  ></ListOrder>
+                );
+              })}
+            </>
+          ),
+        })}
       </div>
-      </ul>
+      <br />
+
+      
+      {showLoading && <LoadingComponent></LoadingComponent>}
+      <Modal
+        open={errorMsg !== ''}
+        title="Ocorreu um erro inesperado."
+        closeButtonCallback={closeModalAlert}
+      >
+        <span>{errorMsg}</span>
+      </Modal>
     </BaseLayout>
   );
-}
+};
 
 export default OrderPage;

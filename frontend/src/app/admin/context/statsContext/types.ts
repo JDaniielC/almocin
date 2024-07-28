@@ -1,3 +1,5 @@
+/*
+
 export enum StatsFilter {
   ALL = 'all',
   MONTH = 'month',
@@ -21,4 +23,4 @@ export interface StatsState {
 export interface StatsAction {
   type: string;
   payload?: Partial<StatsState>;
-}
+}*/
