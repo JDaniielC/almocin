@@ -6,6 +6,8 @@ import AdminPage from "./app/admin/pages/adminPage";
 //import StatsPage from "./app/admin/pages/statsPage";
 import RegisterPage from "./app/login/pages/registerPage";
 import LoginPage from "./app/login/pages/loginPage";
+import HomePage from "./app/home/pages/homePage";
+import ItemMenuPage from "./app/itemMenu/pages/itemMenuPage";
 import OrderPage from "./app/order/pages/orderPage";
 import CartPage from "./app/cart/pages/cartPage";
 import HistoryPage from "./app/history/pages/historyPage";
@@ -17,6 +19,10 @@ const router = createBrowserRouter([
   },{
     path:"order",
     Component:OrderPage,
+  },
+  {
+    path: "/home",
+    Component: HomePage,
   },
   {
     path: "/cadastro",
@@ -50,6 +56,10 @@ const router = createBrowserRouter([
         Component: CategoryPage
       }
     ]
+  },
+  {
+    path: "/menu",
+    Component: ItemMenuPage
   }
 ]);
 

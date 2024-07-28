@@ -11,6 +11,6 @@ export interface Stats {
 
 export enum StatsFilter {
   ALL = 'all',
-  MONTH = 'mon',
+  MONTH = 'month',
   MONEY = 'money'
 }

@@ -2,8 +2,7 @@ import { ReactNode } from "react";
 import { HomeProvider } from "./app/home/context/HomeContext";
 import { CategoryProvider } from "./app/admin/context/CategoryContext";
 import { UserProvider } from "./app/admin/context/userContext";
-import { MenuProvider } from "./app/admin/context/menuContext";
-import { StatsProvider } from "./app/admin/context/statsContext";
+import { MenuProvider } from "./shared/context/menuContext";
 
 const Provider = ({ children }: { children: ReactNode }) => {
   return (
@@ -12,9 +11,6 @@ const Provider = ({ children }: { children: ReactNode }) => {
         <CategoryProvider>
           <HomeProvider>{children}</HomeProvider>
         </CategoryProvider>
-        <StatsProvider>
-          <HomeProvider>{children}</HomeProvider>
-        </StatsProvider>
       </UserProvider>
     </MenuProvider>
   );

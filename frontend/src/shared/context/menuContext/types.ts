@@ -1,5 +1,5 @@
-import RequestStatus from "../../../../shared/types/request-status";
-import ItemMenuModel from "../../models/ItemMenuModel";
+import RequestStatus from "../../types/request-status";
+import ItemMenuModel from "../../../app/admin/models/ItemMenuModel";
 import { ReactNode } from "react";
 import MenuService from "./service";
 
