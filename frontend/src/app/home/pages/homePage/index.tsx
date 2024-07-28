@@ -1,60 +1,68 @@
 import BaseLayout from "../../../../shared/components/BaseLayout";
 import styles from "./index.module.css";
-import LoadingComponent from "../../../../shared/components/Loading";
-import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
-import { useContext, useEffect } from "react";
-import { MenuContext } from "../../../../shared/context/menuContext";
 import { listItemUser } from "../../../../shared/types/base-layout";
+import { useContext, useEffect, useState } from "react";
+import { MenuContext } from "../../../../shared/context/menuContext";
+import LoadingComponent from "../../../../shared/components/Loading";
+import DishComponent from "../../components/dish";
+import ItemMenuModel from "../../../admin/models/ItemMenuModel";
 
 const HomePage = () => {
   const {service, state} = useContext(MenuContext);
+  const [dayOfferItem, setDayOfferItem] = useState<ItemMenuModel | null>(null);
+  
+  function bestPromotion(items: ItemMenuModel[]) {
+    const bestItem = items.filter(item => item.oldPrice > item.price).sort((a, b) => {
+      return a.oldPrice - a.price - (b.oldPrice - b.price)
+    })[0]
+    setDayOfferItem(bestItem)
+    return bestItem;
+  }
 
   useEffect(() => {
-     service.getItems()
-   }, 
-   [service]);
+    state.getItemsRequestStatus.maybeMap({
+      succeeded: (items) => {
+        bestPromotion(items)
+      }
+    })
+  }, [state.getItemsRequestStatus]);
+
+  useEffect(() => {
+    service.getItems()
+  }, [service]);
 
   return (
-    <BaseLayout titlePage="Cardápio" listItem={listItemUser}>
-      <h1>Bem-vindo ao AlmoCIn!</h1>
-
-      <div className={styles.listContainer}>
-        {state.getItemsRequestStatus.maybeMap({
-          loading: () => <LoadingComponent></LoadingComponent>,
-          failed: () => <span>Erro ao carregar itens!</span>,
-          succeeded: (items) => (
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Nome</TableCell>
-                  <TableCell>Preço</TableCell>
-                  <TableCell>Categoria</TableCell>
-                  <TableCell>Promoção</TableCell>
-                  <TableCell>Descrição</TableCell>
-                  <TableCell>Tempo de preparo</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {items.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell>{row.price}</TableCell>
-                    <TableCell>{row.category?.name ?? 'Sem categoria'}</TableCell>
-                    <TableCell>{row.hasPromotion ? 'Em promoção' : '-'}</TableCell>
-                    <TableCell>{row.description}</TableCell>
-                    <TableCell>{row.timeToPrepare}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ),
-        })}
-      </div>
+    <BaseLayout titlePage="Cardápio" listItem={listItemUser}> 
+      {state.getItemsRequestStatus.maybeMap({
+        loading: () => <LoadingComponent></LoadingComponent>,
+        failed: () => <span>Sem pratos no cardápio!</span>,
+        succeeded: (items) => (
+          <>
+            {
+              dayOfferItem && (
+                <div className={styles.dayOffer}>
+                  <div className={styles.dayOfferContainer}>
+                    <h2>{dayOfferItem.name}</h2>
+                    <span className={styles.dayOfferOldPrice}>
+                      R$ {dayOfferItem.oldPrice.toFixed(2)}
+                    </span>
+                    <span className={styles.dayOfferPrice}>
+                      Por apenas R$ {dayOfferItem.price.toFixed(2)}
+                    </span>
+                    <span className={styles.dayOfferStatus}>Prato do dia</span>
+                  </div>
+                  <img src={dayOfferItem.image} alt="img" />
+                </div> 
+              )
+            }
+            <div className={styles.dishList}>
+              {items.map((item, i) => {
+                return <DishComponent item={item} key={i} />
+              })}
+            </div>
+          </>
+        )
+      })}
     </BaseLayout>
   );
 };
