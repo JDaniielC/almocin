@@ -50,5 +50,3 @@ export interface UserContextProps {
   prevState?: UserState;
   service: UserService;
 }
-
-
