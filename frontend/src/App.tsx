@@ -3,37 +3,42 @@ import CategoryPage from "./app/admin/pages/categoryPage";
 import UserPage from "./app/admin/pages/userPage";
 import MenuPage from "./app/admin/pages/menuPage";
 import AdminPage from "./app/admin/pages/adminPage";
-import StatsPage from "./app/admin/pages/statsPage";
 import RegisterPage from "./app/login/pages/registerPage";
 import LoginPage from "./app/login/pages/loginPage";
+import ForgotPasswordPage from "./app/login/pages/forgotPasswordPage";
 import HomePage from "./app/home/pages/homePage";
-import ItemMenuPage from "./app/itemMenu/pages/itemMenuPage";
-import OrderPage from "./app/order/pages/orderPage";
-import CartPage from "./app/cart/pages/cartPage";
-import HistoryPage from "./app/history/pages/historyPage";
+import OrderPage from "./app/home/pages/orderPage";
+import CartPage from "./app/home/pages/cartPage";
+import HistoryPage from "./app/home/pages/historyPage";
+import StatsPage from "./app/admin/pages/statsPage";
 
 const router = createBrowserRouter([
   {
-    path: "*",
-    Component: LoginPage,
-  },{
-    path:"order",
-    Component:OrderPage,
+    path: "/",
+    Component: HomePage,
   },
   {
-    path: "/home",
-    Component: HomePage,
+    path: "/login",
+    Component: LoginPage,
   },
   {
     path: "/cadastro",
     Component: RegisterPage,
   },
   {
-    path:"/cart",
+    path: "/forgot-password",
+    Component: ForgotPasswordPage, 
+  },
+  {
+    path:"/pedido/:id",
+    Component:OrderPage,
+  },
+  {
+    path:"/carrinho",
     Component: CartPage
   },
   {
-    path:"/history",
+    path:"/historico",
     Component: HistoryPage
   },
   {
@@ -41,30 +46,26 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        Component: AdminPage
+        Component: AdminPage,
       },
       {
         path: 'cardapio',
-        Component: MenuPage
+        Component: MenuPage,
       },
       {
         path: 'usuarios',
-        Component: UserPage
+        Component: UserPage,
       },
       {
         path: 'categorias',
-        Component: CategoryPage
+        Component: CategoryPage,
       },
       {
         path: 'estatisticas',
         Component: StatsPage
       }
     ]
-  },
-  {
-    path: "/menu",
-    Component: ItemMenuPage
-  }
+  }, 
 ]);
 
 export default function App() {

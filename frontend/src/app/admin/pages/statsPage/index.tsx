@@ -1,60 +1,89 @@
-import { useContext, useEffect } from "react";
-import styles from "./index.module.css";
+import { useCallback, useContext, useEffect, useState } from "react";
 import LoadingComponent from "../../../../shared/components/Loading";
 import BaseLayout from "../../../../shared/components/BaseLayout";
 import { StatsContext } from "../../context/statsContext/index";
-import { StatsFilter } from "../../context/statsContext/types";
-import { Table, TableHead, TableRow, TableCell, TableBody, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
+import {
+  Table,
+  Select,
+  TableRow,
+  MenuItem,
+  TableHead,
+  TableCell,
+  TableBody,
+  InputLabel,
+  FormControl,
+  SelectChangeEvent,
+} from "@mui/material";
+import { listItemAdmin } from "../../../../shared/types/base-layout";
+import { StatsStateType } from "../../context/statsContext/types";
+import { StatsModel } from "../../models/StatsModel";
+import { AppError } from "../../../../shared/errors/app-error";
 
 const StatsPage = () => {
-  const { state, dispatch } = useContext(StatsContext);
-
-  const fetchStats = async (filter: StatsFilter) => {
-    dispatch({ type: 'GET_STATS', payload: { loading: true } });
-    try {
-      const response = await fetch(`/api/stats/${filter}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
-      dispatch({ type: 'GET_STATS', payload: { loading: false, ...data.data } });
-    } catch (error) {
-      dispatch({ type: 'GET_STATS', payload: { loading: false, error: true } });
-      console.error('Erro ao buscar estatísticas:', error);
-    }
-  };
+  const { state, service } = useContext(StatsContext);
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState<StatsModel>({} as StatsModel);
+  const [filter, setFilter] = useState<StatsStateType>(StatsStateType.GET_STATS);
+  const [errorHandler, setErrorHandler] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchStats(state.filter);
-  }, [state.filter]);
+    service.getStats()
+  }, [service]);
 
-  const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const filter = event.target.value as StatsFilter;
-    dispatch({ type: 'SET_FILTER', payload: { filter } });
-  };
+  useEffect(() => {
+    function runLoading() {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+
+    function runErrorHandler(error: AppError) {
+      console.error(error.message)
+      setErrorHandler('Erro ao carregar estatísticas!');
+    }
+
+    function getData(statsData: StatsModel | Partial<StatsModel>) {
+      setStats(statsData as StatsModel);
+      setErrorHandler(null);
+    }
+
+    state.getStatsRequestStatus.maybeMap({
+      succeeded: (statsData) => getData(statsData),
+      failed: (e) => runErrorHandler(e),
+      loading: () => runLoading(),
+    });
+  }, [state.getStatsRequestStatus]);
+
+  const handleFilterChange = useCallback((
+    event: SelectChangeEvent<StatsStateType>
+  ) => {
+    const type = event.target.value as StatsStateType;
+    service.getStats(type);
+    setFilter(type)
+  }, [service]);
 
   return (
     <BaseLayout titlePage="Estatísticas" listItem={listItemAdmin}>
-      <div className={styles.listContainer}>
-        <FormControl variant="outlined" className={styles.filterControl}>
+      <div>
+        <FormControl variant="outlined">
           <InputLabel id="filter-label">Filtro</InputLabel>
           <Select
             labelId="filter-label"
             id="filter-select"
-            value={state.filter}
+            value={filter}
             onChange={handleFilterChange}
             label="Filtro"
           >
-            <MenuItem value={StatsFilter.ALL}>Todos</MenuItem>
-            <MenuItem value={StatsFilter.MONTH}>Mês Atual</MenuItem>
-            <MenuItem value={StatsFilter.MONEY}>Receita</MenuItem>
+            <MenuItem value={StatsStateType.GET_STATS}>Todos</MenuItem>
+            <MenuItem value={StatsStateType.GET_MONTH}>Mês Atual</MenuItem>
+            <MenuItem value={StatsStateType.GET_MONEY}>Receita</MenuItem>
           </Select>
         </FormControl>
-        {state.loading ? (
-          <LoadingComponent />
-        ) : state.error ? (
+
+        {loading && <LoadingComponent></LoadingComponent>}
+
+        {errorHandler ? (
           <span>Erro ao carregar estatísticas!</span>
         ) : (
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -72,14 +101,14 @@ const StatsPage = () => {
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>{state.totalUsers}</TableCell>
-                <TableCell>{state.totalItems}</TableCell>
-                <TableCell>{state.totalRevenue}</TableCell>
-                <TableCell>{state.currentMonthRevenue}</TableCell>
-                <TableCell>{state.totalOrders}</TableCell>
-                <TableCell>{state.monthOrders}</TableCell>
-                <TableCell>{state.averageTicket}</TableCell>
-                <TableCell>{state.currentMonthAverageTicket}</TableCell>
+                <TableCell>{stats.totalUsers}</TableCell>
+                <TableCell>{stats.totalItems}</TableCell>
+                <TableCell>{stats.totalRevenue}</TableCell>
+                <TableCell>{stats.currentMonthRevenue}</TableCell>
+                <TableCell>{stats.totalOrders}</TableCell>
+                <TableCell>{stats.monthOrders}</TableCell>
+                <TableCell>{stats.averageTicket}</TableCell>
+                <TableCell>{stats.currentMonthAverageTicket}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

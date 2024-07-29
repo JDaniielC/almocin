@@ -1,3 +1,4 @@
+import ItemMenuEntity from '../entities/item-menu.entity';
 import { OrderStatus } from '../types/order';
 import BaseModel from './base.model';
 
@@ -9,6 +10,8 @@ export default class OrderModel extends BaseModel {
   totalDeliveryTime: number;
   cep: string;
   address_number: number;
+  items: ItemMenuEntity[];
+  createdAt: Date;
 
   constructor(data: OrderModel) {
     super(data.id || '');
@@ -19,5 +22,7 @@ export default class OrderModel extends BaseModel {
     this.totalDeliveryTime = data.totalDeliveryTime;
     this.cep = data.cep;
     this.address_number = data.address_number;
+    this.items = data.items;
+    this.createdAt = data.createdAt;
   }
 }

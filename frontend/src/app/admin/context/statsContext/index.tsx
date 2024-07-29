@@ -1,22 +1,39 @@
-import React, { createContext, useReducer, useMemo, ReactNode, Dispatch } from "react";
-import { StatsState, StatsAction } from "./types";
-import { statsReducer, initialState } from "./reducer";
+import { createContext, useReducer, useMemo, ReactNode } from "react";
+import { StatsContextProps } from "./types";
+import { statsReducer } from "./reducer";
+import RequestStatus from "../../../../shared/types/request-status";
+import { ApiService } from "../../../../shared/services/ApiService";
+import StatsService from "./service";
 
-const StatsContext = createContext<{
-  state: StatsState;
-  dispatch: Dispatch<StatsAction>;
-}>({
-  state: initialState,
-  dispatch: () => null,
-});
+const StatsContext = createContext<StatsContextProps>(
+  {} as StatsContextProps
+);
 
 const StatsProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(statsReducer, initialState);
+  const [state, dispatch] = useReducer(statsReducer, {
+    getStatsRequestStatus: RequestStatus.idle(),
+  });
 
-  const value = useMemo(() => ({ state, dispatch }), [state]);
+  const apiService = useMemo(() => {
+    return new ApiService({});
+  }, []);
+  const service = useMemo(
+    () =>
+      new StatsService({
+        apiService,
+        dispatch,
+      }),
+    [apiService]
+  );
 
-  return <StatsContext.Provider value={value}>{children}</StatsContext.Provider>;
+  return (
+    <StatsContext.Provider value={{
+        state,
+        service
+    }}>
+      {children}
+    </StatsContext.Provider>
+  )
 };
 
 export { StatsContext, StatsProvider };
-

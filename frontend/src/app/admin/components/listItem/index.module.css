@@ -51,6 +51,7 @@
 
 .deleteButton:hover {
   color: #ff1100;
+  background-color: transparent;
 }
 
 .deleteButton {

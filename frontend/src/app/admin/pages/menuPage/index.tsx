@@ -1,22 +1,26 @@
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import styles from "./index.module.css";
 import LoadingComponent from "../../../../shared/components/Loading";
 import BaseLayout from "../../../../shared/components/BaseLayout";
-import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
+import { listItemAdmin } from "../../../../shared/types/base-layout";
 import { MenuContext } from "../../../../shared/context/menuContext";
 import { Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 
 const MenuPage = () => {
   const {service, state} = useContext(MenuContext);
 
- useEffect(() => {
+  const handleDeleteItem = useCallback((id: string) => () => {
+    service.deleteItem(id);
+  }, [service]);
+
+  useEffect(() => {
     service.getItems()
-  }, 
-  [service]);
+  }, [service, state.deleteItemRequestStatus]);
 
   return (
     <BaseLayout titlePage="Cardápio" listItem={listItemAdmin}>
       <div className={styles.listContainer}>
+        <h2>Itens no cardápio</h2>
         {state.getItemsRequestStatus.maybeMap({
           loading: () => <LoadingComponent></LoadingComponent>,
           failed: () => <span>Erro ao carregar itens!</span>,
@@ -30,6 +34,7 @@ const MenuPage = () => {
                   <TableCell>Promoção</TableCell>
                   <TableCell>Descrição</TableCell>
                   <TableCell>Tempo de preparo</TableCell>
+                  <TableCell>Ações</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -43,9 +48,25 @@ const MenuPage = () => {
                     </TableCell>
                     <TableCell>{row.price}</TableCell>
                     <TableCell>{row.category?.name ?? 'Sem categoria'}</TableCell>
-                    <TableCell>{row.hasPromotion ? 'Em promoção' : '-'}</TableCell>
+                    <TableCell>{row.price < row.oldPrice ? 'Em promoção' : '-'}</TableCell>
                     <TableCell>{row.description}</TableCell>
                     <TableCell>{row.timeToPrepare}</TableCell>
+                    <TableCell sx={
+                      {display: 'flex', gap: '10px'}
+                    }>
+                      <a
+                        className={styles.editLink}
+                        href={`/admin/menu/edit/${row.id}`}
+                      >Editar</a>
+
+                      <button
+                        type="button"
+                        className={styles.deleteItem}
+                        onClick={handleDeleteItem(row.id)}
+                      >
+                        Excluir
+                      </button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -53,6 +74,9 @@ const MenuPage = () => {
           ),
         })}
       </div>
+      <a href="/admin/menu/create" className={styles.createItem}>
+        Criar item
+      </a>
     </BaseLayout>
   );
 };

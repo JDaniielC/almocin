@@ -54,7 +54,7 @@ const BaseLayout = ({ children, titlePage, listItem}: BaseLayoutProps) => {
         <Divider />
         <List component="nav">
           {listItem.map((item, index) => (
-            <ListItemButton key={index}>
+            <ListItemButton key={index} href={item.url}>
               <ListItemIcon>
                 <item.icon />
               </ListItemIcon>

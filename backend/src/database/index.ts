@@ -22,6 +22,20 @@ export default class Database {
   }
 
   static seed() {
+    let imageUrl: string[] = []
+
+    function populateImageUrl() {
+      const baseUrl = 'https://api.unsplash.com/search/collections?page=1&query=food&client_id='
+      fetch(baseUrl+process.env.UNSPLASH_ACCESS_KEY).then((res) => res.json()).then((data) => {
+        imageUrl = data.results.map((result: any) => result.cover_photo.urls.regular)
+        setInstanceData()
+      }).catch((err) => {
+        console.error(err)
+      })
+    }
+
+    populateImageUrl()
+
     const items = [
       'Batata',
       'Arroz',
@@ -65,44 +79,56 @@ export default class Database {
       return itemsIds;
     }
 
-    Database.getInstance().data = {
-      menu: items.map((item, index) => new ItemMenuEntity({
-        id: `item-id-${index}`,
-        name: item,
-        createdAt: new Date(),
-        active: Math.random() > 0.5, // 50%
-        description: `Descrição do ${item}`,
-        image: `${item.toLowerCase()}.png`,
-        categoryID: linkItemsCategories[index],
-        oldPrice: Math.floor(Math.random() * 10), // 0 - 9
-        price: Math.floor(Math.random() * 10) + 1, // 1 - 10
-        timeToPrepare: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes
-      })),
+    function getRandomOrdersStatus(): OrderStatus {
+      const status = [
+        OrderStatus.inProgress,
+        OrderStatus.inCart,
+        OrderStatus.canceled,
+        OrderStatus.concluded
+      ];
+      return status[Math.floor(Math.random() * status.length)];
+    }
 
-      category: categories.map((category) => ({
-        ...category,
-        createdAt: new Date(),
-        active: linkItemsCategories.includes(category.id) ?? Math.random() > 0.5
-      })),
-
-      order: items.map((item, index) => new OrderEntity({
-        itemsId: getRandomItemsIds(),
-        userID: users[Math.floor(Math.random() * users.length)].id,
-        id: `pedido-id-${index}`,
-        totalPrice: Math.floor(Math.random() * 10), // 0 - 9
-        status: OrderStatus.inProgress,
-        totalDeliveryTime: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes,
-        cep: "12345-678",
-        address_number: Math.floor(Math.random() * 999) + 1, // 1 - 1000 address number
-        createdAt: new Date(),
-        active: Math.random() > 0.5, // 50%
-      })),
-      
-      user: users.map((user) => ({
-        ...user,
-        createdAt: new Date(),
-        active: Math.random() > 0.5, // 50%
-      })),
-    };
+    function setInstanceData() {
+      Database.getInstance().data = {
+        menu: items.map((item, index) => new ItemMenuEntity({
+          id: `item-id-${index}`,
+          name: item,
+          createdAt: new Date(),
+          active: Math.random() > 0.5, // 50%
+          description: `Descrição do ${item}`,
+          image: imageUrl[index],
+          categoryID: linkItemsCategories[index],
+          oldPrice: Math.floor(Math.random() * 10), // 0 - 9
+          price: Math.floor(Math.random() * 10) + 1, // 1 - 10
+          timeToPrepare: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes
+        })),
+  
+        category: categories.map((category) => ({
+          ...category,
+          createdAt: new Date(),
+          active: linkItemsCategories.includes(category.id) ?? Math.random() > 0.5
+        })),
+  
+        order: items.map((item, index) => new OrderEntity({
+          itemsId: getRandomItemsIds(),
+          userID: users[Math.floor(Math.random() * users.length)].id,
+          id: `pedido-id-${index}`,
+          totalPrice: Math.floor(Math.random() * 10), // 0 - 9
+          status: getRandomOrdersStatus(),
+          totalDeliveryTime: Math.floor(Math.random() * 60) + 15, // 15 - 75 minutes,
+          cep: "12345-678",
+          address_number: Math.floor(Math.random() * 999) + 1, // 1 - 1000 address number
+          createdAt: new Date(),
+          active: Math.random() > 0.5, // 50%
+        })),
+        
+        user: users.map((user) => ({
+          ...user,
+          createdAt: new Date(),
+          active: Math.random() > 0.5, // 50%
+        })),
+      };
+    }
   }
 }
