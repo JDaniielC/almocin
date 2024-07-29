@@ -11,6 +11,7 @@ export default class OrderModel extends BaseModel {
   cep: string;
   address_number: number;
   items: ItemMenuEntity[];
+  createdAt: Date;
 
   constructor(data: OrderModel) {
     super(data.id || '');
@@ -22,5 +23,6 @@ export default class OrderModel extends BaseModel {
     this.cep = data.cep;
     this.address_number = data.address_number;
     this.items = data.items;
+    this.createdAt = data.createdAt;
   }
 }

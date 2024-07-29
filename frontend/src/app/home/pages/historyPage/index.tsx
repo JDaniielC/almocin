@@ -44,18 +44,15 @@ const HistoryPage = () => {
                     <div className={styles.orderList}>
                       {order.items.map((itemMenu, i) => {
                         return (
-                          <>
-                            <li key={i} className={styles.itemContainer}>
-                              <div className={styles.itemInfo}>
-                                <h2>{itemMenu.name}</h2>
-                                <span className={styles.itemPrice}>
-                                  R$ {itemMenu.price.toFixed(2)}
-                                </span>
-                              </div>
-                              <img src={itemMenu.image} alt="itemImg" />
-                            </li>
-                            {/* <hr /> */}
-                          </>
+                          <li key={i} className={styles.itemContainer}>
+                            <div className={styles.itemInfo}>
+                              <h2>{itemMenu.name}</h2>
+                              <span className={styles.itemPrice}>
+                                R$ {itemMenu.price.toFixed(2)}
+                              </span>
+                            </div>
+                            <img src={itemMenu.image} alt="itemImg" />
+                          </li>
                         );
                       })}
                     </div>
