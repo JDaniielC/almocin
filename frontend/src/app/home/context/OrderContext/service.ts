@@ -77,14 +77,14 @@ export default class OrderService {
 
   async updateOrder(
     id: string,
-    OrderForm: OrderFormType
+    OrderData: Order
   ): Promise<void> {
     this.dispatch({
       type: OrderStateType.UPDATE,
       payload: RequestStatus.loading(),
     });
 
-    const result = await this.apiService.update(`${this.prefix}/${id}`, OrderForm);
+    const result = await this.apiService.update(`${this.prefix}/${id}`, OrderData);
 
     result.handle({
       onSuccess: (response) => {
@@ -160,6 +160,31 @@ export default class OrderService {
       onFailure: (error) => {
         this.dispatch({
           type: OrderStateType.GET_BY_USER,
+          payload: RequestStatus.failure(error),
+        });
+      },
+    });
+  }
+
+  async getDeliveryTime(id: string, cep: string): Promise<void> {
+    this.dispatch({
+      type: OrderStateType.GET_DELIVERY_TIME,
+      payload: RequestStatus.loading(),
+    });
+
+    const result = await this.apiService.get(`${this.prefix}/${id}/${cep}`);
+
+    result.handle({
+      onSuccess: (response) => {
+        const responseData = response.data;
+        this.dispatch({
+          type: OrderStateType.GET_DELIVERY_TIME,
+          payload: RequestStatus.success(responseData.totalDeliveryTime),
+        });
+      },
+      onFailure: (error) => {
+        this.dispatch({
+          type: OrderStateType.GET_DELIVERY_TIME,
           payload: RequestStatus.failure(error),
         });
       },

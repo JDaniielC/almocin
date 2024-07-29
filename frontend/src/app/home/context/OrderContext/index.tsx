@@ -17,6 +17,7 @@ export const OrderProvider = ({ children }: OrderProviderProps) => {
     getOrdersRequestStatus: RequestStatus.idle(),
     addToChartRequestStatus: RequestStatus.idle(),
     getOrdersByUserRequestStatus: RequestStatus.idle(),
+    getDeliveryTimeRequestStatus: RequestStatus.idle(),
   });
 
   const prevState = usePrevious(state);
