@@ -1,3 +1,5 @@
+import ItemMenuModel from "../../app/admin/models/ItemMenuModel";
+
 export enum OrderStatus {
   inCart = "In Cart",
   inProgress = "In Progress",
@@ -8,6 +10,7 @@ export enum OrderStatus {
 export interface Order {
   id: string;
   itemsId: string[];
+  items: ItemMenuModel[];
   userID: string;
   totalPrice: number;
   status: OrderStatus;

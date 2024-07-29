@@ -137,5 +137,33 @@ export default class OrderService {
       });
     }
   }
+
+  async getOrdersByUserId(userId: string): Promise<void> {
+    this.dispatch({
+      type: OrderStateType.GET_BY_USER,
+      payload: RequestStatus.loading(),
+    });
+
+    const result = await this.apiService.get(`${this.prefix}/byUser/${userId}`);
+
+    result.handle({
+      onSuccess: (response) => {
+        const responseData: Order[] = response.data.map(
+          (order: Order) => order
+        );
+
+        this.dispatch({
+          type: OrderStateType.GET_BY_USER,
+          payload: RequestStatus.success(responseData),
+        });
+      },
+      onFailure: (error) => {
+        this.dispatch({
+          type: OrderStateType.GET_BY_USER,
+          payload: RequestStatus.failure(error),
+        });
+      },
+    });
+  }
 }
 
