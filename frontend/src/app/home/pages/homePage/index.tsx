@@ -6,10 +6,14 @@ import { MenuContext } from "../../../../shared/context/menuContext";
 import LoadingComponent from "../../../../shared/components/Loading";
 import DishComponent from "../../components/dish";
 import ItemMenuModel from "../../../admin/models/ItemMenuModel";
+import { OrderContext } from "../../context/OrderContext";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const {service, state} = useContext(MenuContext);
+  const { service, state } = useContext(MenuContext);
+  const { service: orderService } = useContext(OrderContext);
   const [dayOfferItem, setDayOfferItem] = useState<ItemMenuModel | null>(null);
+  const navigate = useNavigate();
   
   function bestPromotion(items: ItemMenuModel[]) {
     const bestItem = items.filter(item => item.oldPrice > item.price).sort((a, b) => {
@@ -18,6 +22,14 @@ const HomePage = () => {
     setDayOfferItem(bestItem)
     return bestItem;
   }
+
+  function selectItem(id: string){ 
+    return () => {
+      orderService.addOrderToChart(id, 'user-id-2')
+      navigate('/carrinho')
+    };
+  }
+
 
   useEffect(() => {
     state.getItemsRequestStatus.maybeMap({
@@ -40,7 +52,7 @@ const HomePage = () => {
           <>
             {
               dayOfferItem && (
-                <div className={styles.dayOffer}>
+                <div className={styles.dayOffer} onClick={selectItem(dayOfferItem.id)}>
                   <div className={styles.dayOfferContainer}>
                     <h2>{dayOfferItem.name}</h2>
                     <span className={styles.dayOfferOldPrice}>
@@ -57,7 +69,11 @@ const HomePage = () => {
             }
             <div className={styles.dishList}>
               {items.map((item, i) => {
-                return <DishComponent item={item} key={i} />
+                return (<DishComponent
+                  item={item}
+                  key={i}
+                  selectCallback={selectItem(item.id)}
+                />)
               })}
             </div>
           </>

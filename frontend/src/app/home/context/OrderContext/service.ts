@@ -22,6 +22,34 @@ export default class OrderService {
     this.dispatch = dispatch;
   }
 
+  async addOrderToChart(id: string, userId: string): Promise<void> {
+    this.dispatch({
+      type: OrderStateType.ADD_TO_CHART,
+      payload: RequestStatus.loading(),
+    });
+
+    const result = await this.apiService.post(`${this.prefix}/add`, {
+      id,
+      userId,
+    });
+
+    result.handle({
+      onSuccess: (response) => {
+        const responseData = response.data;
+        this.dispatch({
+          type: OrderStateType.ADD_TO_CHART,
+          payload: RequestStatus.success(responseData),
+        });
+      },
+      onFailure: (error) => {
+        this.dispatch({
+          type: OrderStateType.ADD_TO_CHART,
+          payload: RequestStatus.failure(error),
+        });
+      },
+    });
+  }
+
   async createOrder(orderForm: OrderFormType): Promise<void> {
     this.dispatch({
       type: OrderStateType.CREATE,

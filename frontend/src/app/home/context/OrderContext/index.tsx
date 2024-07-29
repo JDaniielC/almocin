@@ -14,7 +14,8 @@ export const OrderProvider = ({ children }: OrderProviderProps) => {
   const [state, dispatch] = useReducer(OrderStateReducer, {
     createOrderRequestStatus: RequestStatus.idle(),
     updateOrderRequestStatus: RequestStatus.idle(),
-    getOrdersRequestStatus: RequestStatus.idle()
+    getOrdersRequestStatus: RequestStatus.idle(),
+    addToChartRequestStatus: RequestStatus.idle(),
   });
 
   const prevState = usePrevious(state);
