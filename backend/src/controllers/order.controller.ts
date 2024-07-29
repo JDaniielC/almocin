@@ -26,6 +26,9 @@ class OrderController {
       this.getOrdersByUserId(req, res)
     );
 
+    this.router.get(`${this.prefix}/:id`, (req: Request, res: Response) =>
+      this.getOrderById(req, res)
+    );
     this.router.post(this.prefix, (req: Request, res: Response) =>
       this.createOrder(req, res)
     );
@@ -104,6 +107,16 @@ class OrderController {
     return new SuccessResult({
       msg: 'Pedido adicionado com sucesso',
       data: updatedOrder,
+    }).handle(res);
+  }
+
+  private async getOrderById(req: Request, res: Response) {
+    const orderId = req.params.id;
+    const order = await this.orderService.getOrder(orderId);
+
+    return new SuccessResult({
+      msg: Result.transformRequestOnMsg(req),
+      data: order,
     }).handle(res);
   }
 }

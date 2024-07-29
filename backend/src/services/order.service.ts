@@ -21,7 +21,7 @@ class OrderService {
     const ordersByUser = await this.orderRepository.getOrdersByUserId(userId);
     const orderInCart = ordersByUser.find(order => order.status === OrderStatus.inCart);
     const item = await this.menuRepository.getItem(id);
-    
+
     if (orderInCart) {
       orderInCart.itemsId.push(id);
       orderInCart.totalPrice += item!.price;
@@ -52,22 +52,38 @@ class OrderService {
     return model;
   }
   public async getOrdersByUserId(userId: string): Promise<OrderModel[]> {
-    const entity = await this.orderRepository.getOrders();    
+    const entity = await this.orderRepository.getOrders();
     const menu = await this.menuRepository.getItems();
-    
+
     const model = entity
-      .filter(order => order.userID === userId) 
+      .filter(order => order.userID === userId)
       .map((item) => new OrderModel({
-        ...item,  
-        itemsId: menu.filter(el => item.itemsId.includes(el.id)).map(el => el.id), 
+        ...item,
+        itemsId: menu.filter(el => item.itemsId.includes(el.id)).map(el => el.id),
         items: menu.filter(el => item.itemsId.includes(el.id)),
         totalPrice: menu.filter(el => item.itemsId.includes(el.id)).reduce(
           (acc, el) => acc + el.price, 0
         ),
       }));
-    
+
     return model;
-}
+  }
+
+  public async getOrder(id: string): Promise<OrderModel> {
+    const entity = await this.orderRepository.getOrder(id);
+    if (entity) {
+      const allItems = await this.menuRepository.getItems();
+      return new OrderModel({
+        ...entity,
+        items: allItems.filter(item => entity.itemsId.includes(item.id)),
+      });
+    } else {
+      throw new HttpNotFoundError({
+        msgCode: 'Não encontrado',
+        msg: 'Pedido não encontrado no cardápio',
+      });
+    }
+  }
 
   public async createOrder(data: OrderEntity): Promise<OrderModel> {
     const intemsId = data.itemsId;
