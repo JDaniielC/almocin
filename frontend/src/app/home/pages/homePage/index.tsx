@@ -25,7 +25,7 @@ const HomePage = () => {
 
   function selectItem(id: string){ 
     return () => {
-      orderService.addOrderToChart(id, 'user-id-2')
+      orderService.addOrderToCart(id, 'user-id-1')
       navigate('/carrinho')
     };
   }
@@ -44,7 +44,7 @@ const HomePage = () => {
   }, [service]);
 
   return (
-    <BaseLayout titlePage="Cardápio" listItem={listItemUser}> 
+    <BaseLayout titlePage="AlmoCIn" listItem={listItemUser}> 
       {state.getItemsRequestStatus.maybeMap({
         loading: () => <LoadingComponent></LoadingComponent>,
         failed: () => <span>Sem pratos no cardápio!</span>,

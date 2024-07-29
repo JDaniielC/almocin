@@ -31,7 +31,7 @@ class OrderController {
     );
 
     this.router.post(`${this.prefix}/add`, (req: Request, res: Response) =>
-      this.addItemToChart(req, res)
+      this.addItemToCart(req, res)
     );
 
     this.router.put(`${this.prefix}/:id`, (req: Request, res: Response) =>
@@ -98,7 +98,7 @@ class OrderController {
     }).handle(res);
   }
 
-  private async addItemToChart(req: Request, res: Response) {
+  private async addItemToCart(req: Request, res: Response) {
     const updatedOrder = await this.orderService.addOrder(req.body.id, req.body.userId);
 
     return new SuccessResult({

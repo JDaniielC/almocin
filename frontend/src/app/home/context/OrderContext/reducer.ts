@@ -17,10 +17,10 @@ const OrderStateReducer = (state: OrderState, action: OrderStateAction) => {
         ...state,
         updateOrderRequestStatus: action.payload,
       };
-    case OrderStateType.ADD_TO_CHART:
+    case OrderStateType.ADD_TO_CART:
       return {
         ...state,
-        addToChartRequestStatus: action.payload,
+        addToCartRequestStatus: action.payload,
       };
     case OrderStateType.GET_BY_USER:
       return {

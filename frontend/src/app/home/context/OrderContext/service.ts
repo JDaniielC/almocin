@@ -22,9 +22,9 @@ export default class OrderService {
     this.dispatch = dispatch;
   }
 
-  async addOrderToChart(id: string, userId: string): Promise<void> {
+  async addOrderToCart(id: string, userId: string): Promise<void> {
     this.dispatch({
-      type: OrderStateType.ADD_TO_CHART,
+      type: OrderStateType.ADD_TO_CART,
       payload: RequestStatus.loading(),
     });
 
@@ -37,13 +37,13 @@ export default class OrderService {
       onSuccess: (response) => {
         const responseData = response.data;
         this.dispatch({
-          type: OrderStateType.ADD_TO_CHART,
+          type: OrderStateType.ADD_TO_CART,
           payload: RequestStatus.success(responseData),
         });
       },
       onFailure: (error) => {
         this.dispatch({
-          type: OrderStateType.ADD_TO_CHART,
+          type: OrderStateType.ADD_TO_CART,
           payload: RequestStatus.failure(error),
         });
       },
