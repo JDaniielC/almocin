@@ -1,51 +1,69 @@
-.orderPanel {
-  width: 100%;
-  padding: 5px;
-  gap: 5px;
-  margin:5px;
-  border: 1px solid black;
-
-
-  border-radius: 5px;
+.orderContainer {
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-
-}
-
-
-img {
-  max-width: 300px;
-  max-height: 300px;
-}
-
-li{
-  list-style-type:none;
-}
-
-
-ul {
-  list-style-type: none; 
-  padding: 0;
-}
-
-.orderPanel {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px; 
-  border: 1px solid #ccc; 
-  padding: 10px; 
-  margin-bottom: 10px;
-}
-
-.list-elem-left, .list-elem-right {
-  display: flex;
-  flex-direction: row;
   justify-content: center;
 }
 
-.orderImage {
-  max-width: 100%; 
-  height: auto; 
-  display: block;
+.order {
+  display: flex;
+  flex-direction: column;
+  border-radius: .5rem;
+  padding: 1rem;
+  border: solid 1px #e0e0e0;
+
+  user-select: none;
+}
+
+.orderList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.itemContainer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  width: 23rem;
+
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  width: 40%;
+}
+
+.itemContainer img {
+  user-select: none;
+  -webkit-user-drag: none;
+  min-width: 11rem;
+  min-height: 6.5rem;
+  flex: 1;
+  border: solid 1px black;
+  object-fit: cover;
+  border-radius: .5rem;
+}
+
+.itemPrice {
+  font-size: 1.5rem;
+}
+
+.totalPrice {
+  margin-left: auto;
+  margin-right: 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.flex {
+  margin-top: 1rem;
+  display: flex;
+}
+
+.flex span {
+  font-size: 1.5rem;
 }

@@ -6,55 +6,80 @@ import BaseLayout from "../../../../shared/components/BaseLayout";
 
 import styles from './index.module.css';
 import { listItemUser } from "../../../../shared/types/base-layout";
+import { OrderStatus } from "../../../../shared/types/order";
 
 const HistoryPage = () => {
   const { service, state } = useContext(OrderContext);
 
+  function translateStatus(status: OrderStatus) {
+    switch (status) {
+      case OrderStatus.inProgress:
+        return 'Em andamento';
+      case OrderStatus.concluded:
+        return 'Entregue';
+      case OrderStatus.canceled:
+        return 'Cancelado';
+      default:
+        return 'Desconhecido';
+    }
+  }
+
   useEffect(() => {
-    service.getOrders()
-  }, 
-  [service
-  ]);
+    service.getOrdersByUserId('user-id-1')
+  }, [service]);
 
   return (
     <BaseLayout titlePage="Historico" listItem={listItemUser}>
-      <div>
-        {state.getOrdersRequestStatus.maybeMap({
-          loading: () => <LoadingComponent></LoadingComponent>,
-          failed: () => (
-            <span>Erro ao carregar o order!</span>
-          ),
-          succeeded: (orders) => (
-            <>
-              {orders.map((order,index) => {
+      {state.getOrdersByUserRequestStatus.maybeMap({
+        loading: () => <LoadingComponent></LoadingComponent>,
+        failed: () => (
+          <span>Erro ao carregar seus pedidos!</span>
+        ),
+        succeeded: (orders) => (
+          <div className={styles.orderContainer}>
+            {orders.filter(el => el.status != OrderStatus.inCart).map(
+              (order, index) => {
                 return (
-                    <div key={index}>
-                        <li className= {styles.orderPanel}>
-                          <div className="list-elem-left">
-                            <p>ID: {order.id}</p>
-                            <p>Items ID: {order.itemsId.join(', ')}</p>
-                            <p>User ID: {order.userID}</p>
-                            <p>Total Price: ${order.totalPrice}</p>
-                            <p>Status: {order.status}</p>
-                            <p>Total Delivery Time: {order.totalDeliveryTime} days</p>
-                            <p>CEP: {order.cep}</p>
-                            <p>Address Number: {order.address_number}</p>
-                          </div>
-                          
-                          <div className="list-elem-right">
-                            
-                          </div>
-                            
-                        </li>
+                  <div key={index} className={styles.order}>
+                    <div className={styles.orderList}>
+                      {order.items.map((itemMenu, i) => {
+                        return (
+                          <>
+                            <li key={i} className={styles.itemContainer}>
+                              <div className={styles.itemInfo}>
+                                <h2>{itemMenu.name}</h2>
+                                <span className={styles.itemPrice}>
+                                  R$ {itemMenu.price.toFixed(2)}
+                                </span>
+                              </div>
+                              <img src={itemMenu.image} alt="itemImg" />
+                            </li>
+                            {/* <hr /> */}
+                          </>
+                        );
+                      })}
                     </div>
-                );
-              })}
-            </>
-          ),
-        })}
-      </div>
-      <br />
-      
+                    <div className={styles.flex}>
+                      <span style={
+                        order.status === OrderStatus.canceled
+                        ? { color: 'red' }
+                        : order.status === OrderStatus.concluded
+                        ? { color: 'green' }
+                        : { color: 'blue' }
+                      }>
+                        {translateStatus(order.status)}
+                      </span>
+                      <span className={styles.totalPrice}>
+                        Total: R$ {order.totalPrice.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                )
+              }
+            )}
+          </div>
+        ),
+      })}
     </BaseLayout>
   );
 };

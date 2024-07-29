@@ -104,6 +104,10 @@ const CartPage = () => {
           </li>
         )
       })}
+
+      {items.length === 0 && (
+        <span>Seu carrinho está vazio!</span>
+      )}
       <div className={styles.orderActions}>
         <span className={styles.totalPrice}>Total: R$ {totalPrice.toFixed(2)}</span>
         <div className={styles.deliveryTimeContainer}>
