@@ -5,25 +5,21 @@ import MenuPage from "./app/admin/pages/menuPage";
 import AdminPage from "./app/admin/pages/adminPage";
 import RegisterPage from "./app/login/pages/registerPage";
 import LoginPage from "./app/login/pages/loginPage";
-import ForgotPasswordPage from "./app/login/pages/forgotPasswordPage"; // Importar a página
+import ForgotPasswordPage from "./app/login/pages/forgotPasswordPage";
 import HomePage from "./app/home/pages/homePage";
-import ItemMenuPage from "./app/itemMenu/pages/itemMenuPage";
-import OrderPage from "./app/order/pages/orderPage";
-import CartPage from "./app/cart/pages/cartPage";
-import HistoryPage from "./app/history/pages/historyPage";
+import OrderPage from "./app/home/pages/orderPage";
+import CartPage from "./app/home/pages/cartPage";
+import HistoryPage from "./app/home/pages/historyPage";
+import StatsPage from "./app/admin/pages/statsPage";
 
 const router = createBrowserRouter([
   {
-    path: "*",
-    Component: LoginPage,
-  },
-  {
-    path: "order",
-    Component: OrderPage,
-  },
-  {
-    path: "/home",
+    path: "/",
     Component: HomePage,
+  },
+  {
+    path: "/login",
+    Component: LoginPage,
   },
   {
     path: "/cadastro",
@@ -34,12 +30,16 @@ const router = createBrowserRouter([
     Component: ForgotPasswordPage, 
   },
   {
-    path: "/cart",
-    Component: CartPage,
+    path:"/pedido/:id",
+    Component:OrderPage,
   },
   {
-    path: "/history",
-    Component: HistoryPage,
+    path:"/carrinho",
+    Component: CartPage
+  },
+  {
+    path:"/historico",
+    Component: HistoryPage
   },
   {
     path: '/adm',
@@ -60,12 +60,12 @@ const router = createBrowserRouter([
         path: 'categorias',
         Component: CategoryPage,
       },
-    ],
-  },
-  {
-    path: "/menu",
-    Component: ItemMenuPage,
-  },
+      {
+        path: 'estatisticas',
+        Component: StatsPage
+      }
+    ]
+  }, 
 ]);
 
 export default function App() {

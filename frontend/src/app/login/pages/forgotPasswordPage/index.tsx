@@ -29,15 +29,9 @@ export default function EsqueceuSenhaPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    try {
-      await service.requestForgotPassword(formData);
-
-      // Mostra uma mensagem de sucesso ou redireciona o usuário conforme a necessidade
-      alert('Senha redefinida com sucesso!');
-    } catch (error) {
-      console.error('Falha ao redefinir a senha:', error);
-      setError('Falha ao redefinir a senha. Por favor, tente novamente.');
-    }
+    await service.requestForgotPassword(formData);
+    alert('Senha redefinida com sucesso!');
+    setError(null)
   };
 
   return (

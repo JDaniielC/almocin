@@ -7,7 +7,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const cepRegex = /^\d{5}-\d{3}$/;
 
 // Expressão regular para validar CPF
-const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
+const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\\-\d{2}$/;
 
 export const RegisterFormSchema = z.object({
   name: z

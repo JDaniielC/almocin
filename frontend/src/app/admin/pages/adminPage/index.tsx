@@ -1,5 +1,5 @@
 import BaseLayout from "../../../../shared/components/BaseLayout";
-import { listItemAdmin } from "../../../../shared/types/base-layout-list-item";
+import { listItemAdmin } from "../../../../shared/types/base-layout";
 
 const AdminPage = () => {
   return (
