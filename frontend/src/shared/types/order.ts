@@ -17,5 +17,6 @@ export interface Order {
   totalDeliveryTime: number;
   cep: string;
   address_number: number;
+  createdAt: Date;
 }
 

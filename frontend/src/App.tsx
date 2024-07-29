@@ -30,7 +30,7 @@ const router = createBrowserRouter([
     Component: ForgotPasswordPage, 
   },
   {
-    path:"/pedido",
+    path:"/pedido/:id",
     Component:OrderPage,
   },
   {

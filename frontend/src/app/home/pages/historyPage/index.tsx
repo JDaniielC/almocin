@@ -8,8 +8,12 @@ import styles from './index.module.css';
 import { listItemUser } from "../../../../shared/types/base-layout";
 import { OrderStatus } from "../../../../shared/types/order";
 
+import { useNavigate } from "react-router-dom";
+
 const HistoryPage = () => {
   const { service, state } = useContext(OrderContext);
+
+  const navigate = useNavigate();
 
   function translateStatus(status: OrderStatus) {
     switch (status) {
@@ -21,6 +25,12 @@ const HistoryPage = () => {
         return 'Cancelado';
       default:
         return 'Desconhecido';
+    }
+  }
+
+  function selectOrder(orderId: string, status: OrderStatus) {
+    return () => {
+      if (status == OrderStatus.inProgress) navigate(`/pedido/${orderId}`);
     }
   }
 
@@ -40,7 +50,16 @@ const HistoryPage = () => {
             {orders.filter(el => el.status != OrderStatus.inCart).map(
               (order, index) => {
                 return (
-                  <div key={index} className={styles.order}>
+                  <div
+                    key={index}
+                    className={styles.order}
+                    onClick={selectOrder(order.id, order.status)}
+                    style={
+                      OrderStatus.inProgress === order.status ? {
+                        border: '1px solid blue',
+                        cursor: 'pointer'
+                      } : {}}
+                  >
                     <div className={styles.orderList}>
                       {order.items.map((itemMenu, i) => {
                         return (
@@ -73,6 +92,9 @@ const HistoryPage = () => {
                   </div>
                 )
               }
+            )}
+            {orders.filter(el => el.status != OrderStatus.inCart).length === 0 && (
+              <span>Você ainda não fez nenhum pedido</span>
             )}
           </div>
         ),

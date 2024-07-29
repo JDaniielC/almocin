@@ -48,7 +48,7 @@ const CartPage = () => {
         status: OrderStatus.inProgress
       }
       service.updateOrder(orderId, newOrder)
-      navigate('/pedido')
+      navigate('/pedido/' + orderId)
     }
   }
 
