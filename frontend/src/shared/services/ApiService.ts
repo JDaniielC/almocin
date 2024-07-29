@@ -18,9 +18,10 @@ export class ApiService {
   }
 
   get headers() {
-    // TODO: add token to headers
+    const token = localStorage.getItem('token');
+    if (!token) return {};
     return {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 
@@ -29,7 +30,7 @@ export class ApiService {
       const httpError: HttpError = HttpError.parseHttpError(error);
 
       if (httpError instanceof HttpUnauthorizedError) {
-        // TODO: handle unauthorized error
+        window.location.href = "/login";
       }
 
       return new FailureResult(httpError);
