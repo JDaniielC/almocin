@@ -17,12 +17,37 @@ class OrderService {
     this.menuRepository = menuRepository;
   }
 
+  public async addOrder(id: string, userId: string) {
+    const ordersByUser = await this.orderRepository.getOrdersByUserId(userId);
+    const orderInCart = ordersByUser.find(order => order.status === OrderStatus.inCart);
+    const item = await this.menuRepository.getItem(id);
+    
+    if (orderInCart) {
+      orderInCart.itemsId.push(id);
+      orderInCart.totalPrice += item!.price;
+      return await this.updateOrder(orderInCart.id, orderInCart);
+    } else {
+      const order = new OrderEntity({
+        totalPrice: item!.price,
+        itemsId: [id],
+        userID: userId,
+        status: OrderStatus.inCart,
+      } as OrderEntity);
+      return await this.orderRepository.createOrder(order);
+    }
+  }
+
   public async getOrders(): Promise<OrderModel[]> {
     const entity = await this.orderRepository.getOrders();
     const menu = await this.menuRepository.getItems();
+
     const model = entity.map((item) => new OrderModel({
       ...item,
       itemsId: menu.filter(el => item.itemsId.includes(el.id)).map(el => el.id),
+      items: menu.filter(el => item.itemsId.includes(el.id)),
+      totalPrice: menu.filter(el => item.itemsId.includes(el.id)).reduce(
+        (acc, el) => acc + el.price, 0
+      ),
     }));
     return model;
   }
@@ -31,10 +56,14 @@ class OrderService {
     const menu = await this.menuRepository.getItems();
     
     const model = entity
-      .filter(order => order.userID === userId)  // Filter orders by userId
+      .filter(order => order.userID === userId) 
       .map((item) => new OrderModel({
-        ...item,  // Spread the properties of the order entity
-        itemsId: menu.filter(el => item.itemsId.includes(el.id)).map(el => el.id),  // Filter menu items to include only those with ids in item.itemsId
+        ...item,  
+        itemsId: menu.filter(el => item.itemsId.includes(el.id)).map(el => el.id), 
+        items: menu.filter(el => item.itemsId.includes(el.id)),
+        totalPrice: menu.filter(el => item.itemsId.includes(el.id)).reduce(
+          (acc, el) => acc + el.price, 0
+        ),
       }));
     
     return model;
@@ -44,10 +73,12 @@ class OrderService {
     const intemsId = data.itemsId;
     const orderEntity = new OrderEntity(data);
     const createdOrder = await this.orderRepository.createOrder(orderEntity);
+    const allItems = await this.menuRepository.getItems();
     return new OrderModel({
       ...createdOrder,
       itemsId: intemsId,
       status: OrderStatus.inCart,
+      items: allItems.filter(item => intemsId.includes(item.id)),
     });
   }
 
@@ -73,9 +104,12 @@ class OrderService {
 
     const entity = await this.orderRepository.updateOrder(id, newData);
 
-
     if (entity) {
-      return new OrderModel(entity);
+      const allItems = await this.menuRepository.getItems();
+      return new OrderModel({
+        ...entity,
+        items: allItems.filter(item => entity.itemsId.includes(item.id)),
+      });
     } else {
       throw new Error('Order entity is null.');
     }
