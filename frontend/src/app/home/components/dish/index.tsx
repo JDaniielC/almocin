@@ -1,11 +1,12 @@
 import ItemMenuModel from '../../../admin/models/ItemMenuModel';
 import styles from './index.module.css'
 
-function DishComponent({ item }: {
-  item: ItemMenuModel
+function DishComponent({ item, selectCallback }: {
+  item: ItemMenuModel,
+  selectCallback: () => void
 }) {
   return (
-    <div className={styles.dish}>
+    <div className={styles.dish} onClick={selectCallback}>
       <div className={styles.dishContainer}>
         <h2>{item.name}</h2>
         <p className={styles.dishPrice}>Preço: R$ {item.price.toFixed(2)}</p>
