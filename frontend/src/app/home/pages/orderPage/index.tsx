@@ -2,107 +2,159 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import styles from "./index.module.css";
 import { OrderContext } from "../../context/OrderContext";
 import LoadingComponent from "../../../../shared/components/Loading";
-import Modal from "../../../../shared/components/Modal";
-import ListOrder from "../../components/listorder";
 import BaseLayout from "../../../../shared/components/BaseLayout";
-import { OrderStatus } from "../../../../shared/types/order";
 import { listItemUser } from "../../../../shared/types/base-layout";
+import { useParams, useNavigate } from "react-router-dom";
+import { Order, OrderStatus } from "../../../../shared/types/order";
 
 const OrderPage = () => {
   const { service, state } = useContext(OrderContext);
-  const [createOrEdit, setCreateOrEdit] = useState<"create" | "edit">("create");
-  const [orderToEdit, setOrderToEdit] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [showLoading, setShowLoading] = useState(false);
+  const [time, setTime] = useState(0);
 
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const closeModalAlert = useCallback(() => {
-    setErrorMsg('');
-  }, []);
-
-  function onEditOrder(orderId: string) {
+  function cancelOrder(orderId: string) {
     return () => {
-      if (createOrEdit === 'edit' && orderToEdit === orderId) {
-        setCreateOrEdit("create");
-        setOrderToEdit(null);
-        return;
-      }
-      setOrderToEdit(orderId);
-      setCreateOrEdit("edit");
-    };
+      service.updateOrder(orderId, {
+        status: OrderStatus.canceled
+      } as Order);
+      navigate('/historico');
+    }
   }
 
+  function passedTime(createdAt: Date) {
+    const timeNow = new Date().getTime();
+    const timeOrder = new Date(createdAt).getTime();
+    const timeCount = Math.floor(
+      (timeNow - timeOrder) / 60000
+    );
+
+    return timeCount;
+  }
+
+  const concludeOrder = useCallback((timeRemaining: number, order: Order, status: OrderStatus) => {
+    if (timeRemaining === 0 && status === OrderStatus.inProgress) {
+      setTimeout(() => {
+        service.updateOrder(order.id, {
+          ...order,
+          status: OrderStatus.concluded
+        });
+
+        navigate('/historico');
+      }, 5000)
+    }
+  }, [service, navigate]);
+
+  function translateStatus(status: OrderStatus) {
+    switch (status) {
+      case OrderStatus.inProgress:
+        return 'Em andamento';
+      case OrderStatus.concluded:
+        return 'Entregue';
+      case OrderStatus.canceled:
+        return 'Cancelado';
+      default:
+        return 'Desconhecido';
+    }
+  }
 
   useEffect(() => {
-    service.getOrders()
+    const interval = setInterval(() => {
+      if (time === 0 || time - 1 < 0) {
+        clearInterval(interval);
+      }
 
-    function loading() {
-      setShowLoading(true)
-      setTimeout(() => {
-        setShowLoading(false) 
-      }, 1000);
-    }
+      setTime(Math.max(time - 1, 0));
+    }, 60000);
+  }, [time]);
 
-    state.createOrderRequestStatus.maybeMap({
-      failed: (error) => setErrorMsg(error.message),
-      loading: () => loading()
-    })
-    state.updateOrderRequestStatus.maybeMap({
-      failed: (error) => setErrorMsg(error.message),
-      loading: () => loading()
-    })
-  }, 
-  [service,
-    state.updateOrderRequestStatus,
-    state.createOrderRequestStatus
+  useEffect(() => {
+    state.getOrderByIdRequestStatus.maybeMap({
+      succeeded: (order) => {
+        const timeInMinutes = passedTime(order.createdAt);
+        const timeRemaining = Math.max(30 - timeInMinutes, 0);
+        setTime(timeRemaining)
+        concludeOrder(timeRemaining, order, order.status);
+      },
+    });
+  }, [
+    state.getOrderByIdRequestStatus,
+    concludeOrder,
   ]);
+
+  useEffect(() => {
+    if (id) {
+      service.getOrderById(id);
+    }
+  }, [service, id, service.updateOrder]);
 
   return (
     <BaseLayout titlePage="Pedidos" listItem={listItemUser}>
       <div className={styles.listContainer}>
-        {state.getOrdersRequestStatus.maybeMap({
+        {state.getOrderByIdRequestStatus.maybeMap({
           loading: () => <LoadingComponent></LoadingComponent>,
-          failed: () => (
-            <Modal
-              open={true}
-              title="Ocorreu um erro inesperado."
-              closeButtonCallback={closeModalAlert}
-            >
-              <span>Erro ao carregar as categorias!</span>
-            </Modal>
-          ),
-          succeeded: (orders) => (
-            <>
-              {orders.filter(order => order.status===OrderStatus.inProgress ).map(
-                (order, i) => {
-                  return (
-                    <ListOrder
-                      key={order.id + i}
-                      name={order.id}
-                      totalPrice={order.totalPrice.toString()}
-                      timeToDelivery={order.totalDeliveryTime.toString()}
-                      items={order.itemsId}
-                      editButtonCallback={onEditOrder(order.id)}
-                      editDisabled={createOrEdit == 'edit' && order.id !== orderToEdit}
-                    ></ListOrder>
-                  );
-                }
-              )}
-            </>
+          failed: () => <p>Pedido não encontrado</p>,
+          succeeded: (order) => (
+            <div className={styles.orderContainer}>
+              <div className={styles.listItem}>
+                <h1>Pratos selecionados</h1>
+                {order.items.map(
+                  (item, i) => {
+                    return (
+                      <div key={i} className={styles.itemContainer}>
+                        <div className={styles.itemInfo}>
+                          <h2>{item.name}</h2>
+                          <span>
+                            Preparo: {item.timeToPrepare} minutos
+                          </span>
+                          <span className={styles.itemPrice}>
+                            R$ {item.price.toFixed(2)} reais
+                          </span>
+                        </div>
+                        <img src={item.image} alt="imagem" />
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+              <div>
+                <div className={styles.orderInfo}>
+                  <p className={styles.orderPanelStatus}>
+                    {translateStatus(order.status)}
+                  </p>
+                  <p>
+                    Tempo estimado:
+                    <br />
+                    <span className={styles.timeToDelivery}>
+                      {order.totalDeliveryTime} minutos
+                    </span>
+                  </p>
+                  <p>
+                    Tempo limite para cancelamento:
+                    <br />
+                    <span className={styles.timeRemaining}>
+                      {order.status === OrderStatus.inProgress
+                        ? time : 0
+                      } minutos
+                    </span>
+                  </p>
+
+                  <p className={styles.totalPrice}>
+                    Total: R$ {order.totalPrice} reais
+                  </p>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    disabled={time === 0}
+                    onClick={cancelOrder(order.id)}
+                  >Cancelar</button>
+                </div>
+              </div>
+            </div>
           ),
         })}
       </div>
-      <br />
-
-      
-      {showLoading && <LoadingComponent></LoadingComponent>}
-      <Modal
-        open={errorMsg !== ''}
-        title="Ocorreu um erro inesperado."
-        closeButtonCallback={closeModalAlert}
-      >
-        <span>{errorMsg}</span>
-      </Modal>
     </BaseLayout>
   );
 };

@@ -38,6 +38,7 @@
 .itemInfo {
   display: flex;
   flex-direction: column;
+  text-align: center;
   gap: .5rem;
   width: 40%;
 }
@@ -47,6 +48,7 @@
   -webkit-user-drag: none;
   min-width: 11rem;
   min-height: 6.5rem;
+  height: 10rem;
   flex: 1;
   border: solid 1px black;
   object-fit: cover;
