@@ -16,6 +16,7 @@ export const OrderProvider = ({ children }: OrderProviderProps) => {
     updateOrderRequestStatus: RequestStatus.idle(),
     getOrdersRequestStatus: RequestStatus.idle(),
     addToCartRequestStatus: RequestStatus.idle(),
+    getOrderByIdRequestStatus: RequestStatus.idle(),
     getOrdersByUserRequestStatus: RequestStatus.idle(),
     getDeliveryTimeRequestStatus: RequestStatus.idle(),
   });

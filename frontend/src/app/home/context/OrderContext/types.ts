@@ -27,6 +27,10 @@ export type OrderStateAction =
   | {
       type: OrderStateType.GET_DELIVERY_TIME;
       payload: RequestStatus<number>;
+    }
+  | {
+      type: OrderStateType.GET_BY_ID;
+      payload: RequestStatus<Order>;
     };
 
 export interface OrderState {
@@ -34,6 +38,7 @@ export interface OrderState {
   updateOrderRequestStatus: RequestStatus<string>;
   addToCartRequestStatus: RequestStatus<string>;
   getOrdersRequestStatus: RequestStatus<Order[]>;
+  getOrderByIdRequestStatus: RequestStatus<Order>;
   getOrdersByUserRequestStatus: RequestStatus<Order[]>;
   getDeliveryTimeRequestStatus: RequestStatus<number>;
 }
@@ -43,6 +48,7 @@ export enum OrderStateType {
   CREATE = "CHANGE_CREATE_ORDER_REQUEST_STATUS",
   UPDATE = "CHANGE_UPDATE_ORDER_REQUEST_STATUS",
   GET_ALL = "CHANGE_GET_ORDERS_REQUEST_STATUS",
+  GET_BY_ID = "CHANGE_GET_ORDER_BY_ID_REQUEST_STATUS",
   GET_BY_USER = "CHANGE_GET_ORDERS_BY_USER_REQUEST_STATUS",
   GET_DELIVERY_TIME = "CHANGE_GET_DELIVERY_TIME_REQUEST_STATUS",
 }

@@ -190,5 +190,30 @@ export default class OrderService {
       },
     });
   }
+
+  async getOrderById(id: string): Promise<void> {
+    this.dispatch({
+      type: OrderStateType.GET_BY_ID,
+      payload: RequestStatus.loading(),
+    });
+
+    const result = await this.apiService.get(`${this.prefix}/${id}`);
+
+    result.handle({
+      onSuccess: (response) => {
+        const responseData = response.data;
+        this.dispatch({
+          type: OrderStateType.GET_BY_ID,
+          payload: RequestStatus.success(responseData),
+        });
+      },
+      onFailure: (error) => {
+        this.dispatch({
+          type: OrderStateType.GET_BY_ID,
+          payload: RequestStatus.failure(error),
+        });
+      }
+    });
+  }
 }
 

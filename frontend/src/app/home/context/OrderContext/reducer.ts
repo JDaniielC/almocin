@@ -32,6 +32,11 @@ const OrderStateReducer = (state: OrderState, action: OrderStateAction) => {
         ...state,
         getDeliveryTimeRequestStatus: action.payload,
       };
+    case OrderStateType.GET_BY_ID:
+      return {
+        ...state,
+        getOrderByIdRequestStatus: action.payload
+      };
 
     default:
       return state;
