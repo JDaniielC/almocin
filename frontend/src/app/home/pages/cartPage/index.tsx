@@ -132,6 +132,7 @@ const CartPage = () => {
         </div>
         <button
           type="button"
+          data-cy="carrinho-page"
           className={styles.confirmButton}
           disabled={timeToDelivery === null}
           onClick={confirmOrder()}

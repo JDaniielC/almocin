@@ -102,8 +102,8 @@ const OrderPage = () => {
                 {order.items.map(
                   (item, i) => {
                     return (
-                      <div key={i} className={styles.itemContainer}>
-                        <div className={styles.itemInfo}>
+                      <div data-cy="panel-pedido" key={i} className={styles.itemContainer}>
+                        <div data-cy="item-pedido" className={styles.itemInfo}>
                           <h2>{item.name}</h2>
                           <span>
                             Preparo: {item.timeToPrepare} minutos
@@ -120,7 +120,7 @@ const OrderPage = () => {
               </div>
               <div>
                 <div className={styles.orderInfo}>
-                  <p className={styles.orderPanelStatus}>
+                  <p data-cy="status-pedido" className={styles.orderPanelStatus}>
                     {translateStatus(order.status)}
                   </p>
                   <p>
@@ -140,7 +140,7 @@ const OrderPage = () => {
                     </span>
                   </p>
 
-                  <p className={styles.totalPrice}>
+                  <p data-cy="price-pedido" className={styles.totalPrice}>
                     Total: R$ {order.totalPrice} reais
                   </p>
                   <button

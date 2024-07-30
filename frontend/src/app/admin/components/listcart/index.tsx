@@ -1,13 +1,17 @@
-import { ListOrderProps } from '../../types/components-props';
+import { ListOrderCartProps } from '../../types/components-props';
 import styles from './index.module.css';
 
-  const ListOrder = ({
-    name, totalPrice,items,timeToDelivery,editButtonCallback, editDisabled,
-  }: ListOrderProps) => {
+  const ListOrderCart = ({
+    name, totalPrice,items,timeToDelivery,editButtonCallback,selectButtonCallback, editDisabled,
+  }: ListOrderCartProps) => {
 
-  const onEditOrder = () => () => {
-    if (editButtonCallback) editButtonCallback();
-  }
+    const onEditOrder = () => () => {
+      if (editButtonCallback) editButtonCallback();
+    }
+
+    const onSelectOrder = () => () => {
+      if (selectButtonCallback) selectButtonCallback();
+    }
 
   
   return (
@@ -44,7 +48,21 @@ import styles from './index.module.css';
       
 
       <div className={styles.buttons}>
-        {
+      {
+          selectButtonCallback &&
+          <button
+            name="select"
+            className={styles.selectButton}
+            onClick={
+              onSelectOrder()
+            }
+            disabled={editDisabled}
+          >
+            confirmar
+          </button>
+        }
+
+{
           editButtonCallback &&
           <button
             name="Cancelar"
@@ -62,4 +80,4 @@ import styles from './index.module.css';
   );
 }
 
-export default ListOrder;
+export default ListOrderCart;

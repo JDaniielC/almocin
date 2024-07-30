@@ -46,12 +46,13 @@ const HistoryPage = () => {
           <span>Erro ao carregar seus pedidos!</span>
         ),
         succeeded: (orders) => (
-          <div className={styles.orderContainer}>
+          <div data-cy="order-container-history" className={styles.orderContainer}>
             {orders.filter(el => el.status != OrderStatus.inCart).map(
               (order, index) => {
                 return (
                   <div
                     key={index}
+                    data-cy="order-panel-history"
                     className={styles.order}
                     onClick={selectOrder(order.id, order.status)}
                     style={
@@ -60,12 +61,12 @@ const HistoryPage = () => {
                         cursor: 'pointer'
                       } : {}}
                   >
-                    <div className={styles.orderList}>
+                    <div data-cy="order-details-history" className={styles.orderList}>
                       {order.items.map((itemMenu, i) => {
                         return (
                           <li key={i} className={styles.itemContainer}>
                             <div className={styles.itemInfo}>
-                              <h2>{itemMenu.name}</h2>
+                              <h2 data-cy="nome-history" >{itemMenu.name}</h2>
                               <span className={styles.itemPrice}>
                                 R$ {itemMenu.price.toFixed(2)}
                               </span>
@@ -76,7 +77,7 @@ const HistoryPage = () => {
                       })}
                     </div>
                     <div className={styles.flex}>
-                      <span style={
+                      <span data-cy="status-history" style={
                         order.status === OrderStatus.canceled
                         ? { color: 'red' }
                         : order.status === OrderStatus.concluded
@@ -85,7 +86,7 @@ const HistoryPage = () => {
                       }>
                         {translateStatus(order.status)}
                       </span>
-                      <span className={styles.totalPrice}>
+                      <span data-cy="preco-history" className={styles.totalPrice}>
                         Total: R$ {order.totalPrice.toFixed(2)}
                       </span>
                     </div>
