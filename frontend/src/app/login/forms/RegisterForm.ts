@@ -7,7 +7,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const cepRegex = /^\d{5}-\d{3}$/;
 
 // Expressão regular para validar CPF
-const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\\-\d{2}$/;
+const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 
 export const RegisterFormSchema = z.object({
   name: z
@@ -25,8 +25,8 @@ export const RegisterFormSchema = z.object({
   cep: z
     .string()
     .min(1, { message: 'O campo CEP não deve ser nulo' })
-    .regex(cepRegex, { message: 'Formato de CEP inválido' }),
-  petName: z
+    .regex(cepRegex, { message: 'Formato deve ser xxxxx-xxx' }),
+  recoveryQuestion: z
     .string()
     .min(1, { message: 'O campo nome do primeiro animal de estimação não deve ser nulo' }),
   paymentMethod: z
@@ -35,7 +35,7 @@ export const RegisterFormSchema = z.object({
   cpf: z
     .string()
     .min(1, { message: 'O campo CPF não deve ser nulo' })
-    .regex(cpfRegex, { message: 'Formato de CPF inválido' }),
+    .regex(cpfRegex, { message: 'Formato deve ser xxx.xxx.xxx-xx' }),
 });
 
 export type RegisterFormType = z.infer<typeof RegisterFormSchema>;

@@ -26,7 +26,27 @@ const userStateReducer = (state: UserState, action: UserStateAction) => {
       return {
         ...state,
         deleteUserRequestStatus: action.payload
-      };
+      }
+    case UserStateType.LOGIN:
+      return {
+        ...state,
+        loginRequestStatus: action.payload
+      }
+    case UserStateType.LOGOUT:
+      return {
+        ...state,
+        logoutRequestStatus: action.payload
+      }
+    case UserStateType.RESET_PASSWORD:
+      return {
+        ...state,
+        resetPasswordRequestStatus: action.payload
+      }
+    case UserStateType.USER_ID:
+      return {
+        ...state,
+        userId: action.payload
+      }
 
     default:
       return state;

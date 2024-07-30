@@ -11,27 +11,38 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { LoginFormSchema, LoginFormType } from '../../forms/LoginForm';
-import { useContext } from 'react';
-import { LoginContext } from '../../context/LoginContext/index';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../../../admin/context/userContext';
+import { useNavigate } from 'react-router-dom';
+import LoadingComponent from '../../../../shared/components/Loading';
+import Modal from '../../../../shared/components/Modal';
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormType>({
     resolver: zodResolver(LoginFormSchema),
   });
+  const { service, state } = useContext(UserContext);
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const { service } = useContext(LoginContext);
+  const closeModal = () => {
+    return () => setOpen(false);
+  }
 
-  const onSubmit: SubmitHandler<LoginFormType> = async data => {
-    if (service) {
-      try {
-        await service.login(data); // Utilizando os dados diretamente
-        // Redirecionar ou notificar usuário após sucesso
-      } catch (error) {
-        console.error('Login falhou:', error);
-        // Exibir mensagem de erro ou notificar usuário
-      }
-    }
+  const onSubmit: SubmitHandler<LoginFormType> = (data) => {
+    service.login(data)
   };
+
+  useEffect(() => {
+    state.loginRequestStatus.maybeMap({
+      succeeded: () => {
+        navigate('/');
+      },
+      failed: (error) => {
+        console.log(error);
+      }
+    })
+  }, [state, navigate]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -97,6 +108,18 @@ export default function LoginPage() {
           </Grid>
         </Box>
       </Box>
+      {
+        state.loginRequestStatus.maybeMap({
+          loading: () => <LoadingComponent></LoadingComponent>,
+          failed: () => (
+            <Modal open={open} closeButtonCallback={closeModal()}>
+              <Typography variant="h6" component="div">
+                Ocorreu um erro, tente novamente
+              </Typography>
+            </Modal>
+          )
+        })
+      }
     </Container>
   );
 }
