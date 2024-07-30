@@ -73,7 +73,6 @@ export default function LoginPage() {
             id="email"
             label="Email"
             autoComplete="email"
-            data-cy="login"
             autoFocus
             {...register('email')}
             error={!!errors.email}
@@ -86,7 +85,6 @@ export default function LoginPage() {
             label="Senha"
             type="password"
             id="password"
-            data-cy="password"
             autoComplete="current-password"
             {...register('password')}
             error={!!errors.password}
@@ -96,7 +94,6 @@ export default function LoginPage() {
             type="submit"
             fullWidth
             variant="contained"
-            data-cy="submit-login"
             sx={{ mt: 3, mb: 2 }}
           >
             Entrar
