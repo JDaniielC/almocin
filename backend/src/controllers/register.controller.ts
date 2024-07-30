@@ -77,7 +77,7 @@ class RegisterController {
       return new SuccessResult({
         msg: ValidationMessages.USER_CREATED_SUCCESS,
         data: newUser,
-      });
+      }).handle(res);
     } catch (error) {
       const msgCode = (error as HttpBadRequestError).msgCode;
       if (msgCode === ValidationMessages.EMAIL_ALREADY_EXISTS) {

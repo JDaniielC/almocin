@@ -5,6 +5,8 @@ import { UserFormType } from "../../forms/UserForm";
 import { AppUnknownError } from "../../../../shared/errors/app-error";
 import RequestStatus from "../../../../shared/types/request-status";
 import UserModel from "../../models/UserModel";
+import { LoginFormType } from "../../../login/forms/LoginForm";
+import { ForgotPasswordType } from "../../../login/forms/ForgotPasswordForm";
 
 export default class UserService {
   private apiService: ApiService;
@@ -156,5 +158,96 @@ export default class UserService {
         payload: RequestStatus.failure(new AppUnknownError()),
       });
     }
+  }
+
+  async login(data: LoginFormType): Promise<void> {
+    this.dispatch({
+      type: UserStateType.LOGIN,
+      payload: RequestStatus.loading(),
+    });
+
+    const result = await this.apiService.post(`/login`, data);
+
+    result.handle({
+      onSuccess: (response) => {
+        const responseData = response.data;
+        localStorage.setItem("token", responseData.token);
+        localStorage.setItem("userId", responseData.userId);
+
+        this.dispatch({
+          type: UserStateType.USER_ID,
+          payload: responseData.userId,
+        });
+
+        this.dispatch({
+          type: UserStateType.LOGIN,
+          payload: RequestStatus.success(responseData),
+        });
+      },
+      onFailure: (error) => {
+        this.dispatch({
+          type: UserStateType.LOGIN,
+          payload: RequestStatus.failure(error),
+        });
+      },
+    });
+  }
+
+  async logout(): Promise<void> {
+    this.dispatch({
+      type: UserStateType.LOGOUT,
+      payload: RequestStatus.loading(),
+    });
+
+    const result = await this.apiService.post(`/login/logout`, {});
+
+    result.handle({
+      onSuccess: (response) => {
+        const responseData = response.data;
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+
+        this.dispatch({
+          type: UserStateType.LOGOUT,
+          payload: RequestStatus.success(responseData),
+        });
+
+        this.dispatch({
+          type: UserStateType.USER_ID,
+          payload: null,
+        });
+      },
+      onFailure: (error) => {
+        this.dispatch({
+          type: UserStateType.LOGOUT,
+          payload: RequestStatus.failure(error),
+        });
+      },
+    });
+  }
+
+  async forgotPassword(data: ForgotPasswordType): Promise<void> {
+    this.dispatch({
+      type: UserStateType.RESET_PASSWORD,
+      payload: RequestStatus.loading(),
+    });
+
+    const result = await this.apiService.post(`/login/forgot-password`, data);
+
+    result.handle({
+      onSuccess: (response) => {
+        const responseData = response.data;
+        this.dispatch({
+          type: UserStateType.RESET_PASSWORD,
+          payload: RequestStatus.success(responseData),
+        });
+      },
+      onFailure: (error) => {
+        this.dispatch({
+          type: UserStateType.RESET_PASSWORD,
+          payload: RequestStatus.failure(error),
+        });
+      },
+    });
   }
 }

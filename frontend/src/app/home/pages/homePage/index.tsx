@@ -8,10 +8,13 @@ import DishComponent from "../../components/dish";
 import ItemMenuModel from "../../../admin/models/ItemMenuModel";
 import { OrderContext } from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../../admin/context/userContext";
 
 const HomePage = () => {
   const { service, state } = useContext(MenuContext);
   const { service: orderService } = useContext(OrderContext);
+  const { state: userState } = useContext(UserContext);
+
   const [dayOfferItem, setDayOfferItem] = useState<ItemMenuModel | null>(null);
   const navigate = useNavigate();
   
@@ -25,7 +28,7 @@ const HomePage = () => {
 
   function selectItem(id: string){ 
     return () => {
-      orderService.addOrderToCart(id, 'user-id-1')
+      orderService.addOrderToCart(id, userState.userId!)
       navigate('/carrinho')
     };
   }

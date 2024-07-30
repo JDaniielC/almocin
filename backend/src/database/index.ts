@@ -36,8 +36,6 @@ export default class Database {
       })
     }
 
-    populateImageUrl()
-
     const items = [
       'Batata',
       'Arroz',
@@ -91,6 +89,11 @@ export default class Database {
       return status[Math.floor(Math.random() * status.length)];
     }
 
+    if (process.env.UNSPLASH_ACCESS_KEY) {
+      populateImageUrl()
+    } else {
+      setInstanceData()
+    }
     function setInstanceData() {
       Database.getInstance().data = {
         menu: items.map((item, index) => new ItemMenuEntity({

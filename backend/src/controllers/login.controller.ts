@@ -33,7 +33,7 @@ class LoginController {
     }
 
     try {
-      const token = await this.loginService.login(email, password);
+      const { token, userId } = await this.loginService.login(email, password);
 
       res.cookie('session_token', token, {
         httpOnly: true,
@@ -42,7 +42,10 @@ class LoginController {
         secure: process.env.NODE_ENV === 'production',
       });
 
-      return new SuccessResult({ msg: 'Login successful', data: { token } }).handle(res);
+      return new SuccessResult({
+        msg: 'Login successful',
+        data: { token, userId }
+      }).handle(res);
     } catch (error) {
       if (error instanceof HttpError) {
         return new FailureResult({ msg: error.msg, code: 400 }).handle(res);
