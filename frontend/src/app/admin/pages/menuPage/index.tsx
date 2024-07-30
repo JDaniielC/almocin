@@ -74,7 +74,7 @@ const MenuPage = () => {
           ),
         })}
       </div>
-      <a href="/admin/menu/create" className={styles.createItem}>
+      <a href="/admin/menu/create" data-cy="criar-item" className={styles.createItem}>
         Criar item
       </a>
     </BaseLayout>
