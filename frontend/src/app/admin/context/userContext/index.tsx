@@ -20,7 +20,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     loginRequestStatus: RequestStatus.idle(),
     logoutRequestStatus: RequestStatus.idle(),
     resetPasswordRequestStatus: RequestStatus.idle(),
-    userId: null,
+    userId: localStorage.getItem("userId"),
   });
 
   const prevState = usePrevious(state);

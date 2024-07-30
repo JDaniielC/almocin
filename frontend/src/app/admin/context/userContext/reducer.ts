@@ -45,7 +45,7 @@ const userStateReducer = (state: UserState, action: UserStateAction) => {
     case UserStateType.USER_ID:
       return {
         ...state,
-        userId: action.payload
+        userId: action.payload ?? localStorage.getItem('userId')
       }
 
     default:

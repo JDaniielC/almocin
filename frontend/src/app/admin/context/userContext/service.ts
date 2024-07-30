@@ -172,6 +172,7 @@ export default class UserService {
       onSuccess: (response) => {
         const responseData = response.data;
         localStorage.setItem("token", responseData.token);
+        localStorage.setItem("userId", responseData.userId);
 
         this.dispatch({
           type: UserStateType.USER_ID,
@@ -204,6 +205,8 @@ export default class UserService {
       onSuccess: (response) => {
         const responseData = response.data;
         localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+
         this.dispatch({
           type: UserStateType.LOGOUT,
           payload: RequestStatus.success(responseData),
