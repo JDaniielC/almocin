@@ -8,9 +8,11 @@ import styles from './index.module.css';
 import { listItemUser } from "../../../../shared/types/base-layout";
 import ItemMenuModel from "../../../admin/models/ItemMenuModel";
 import { Order, OrderStatus } from "../../../../shared/types/order";
+import { UserContext } from "../../../admin/context/userContext";
 
 const CartPage = () => {
   const { service, state } = useContext(OrderContext);
+  const { state: userState } = useContext(UserContext);
   const [timeToDelivery, setTimeToDelivery] = useState<number | null>(null);
   const [cep, setCep] = useState<string>('');
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -74,8 +76,8 @@ const CartPage = () => {
   }, [state.getOrdersByUserRequestStatus])
 
   useEffect(() => {
-    service.getOrdersByUserId('user-id-1')
-  }, [service, state.updateOrderRequestStatus]);
+    if (userState.userId) service.getOrdersByUserId(userState.userId)
+  }, [service, state.updateOrderRequestStatus, userState.userId]);
 
   return (
     <BaseLayout titlePage="Carrinho" listItem={listItemUser}>

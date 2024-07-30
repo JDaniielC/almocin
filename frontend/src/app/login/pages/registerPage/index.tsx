@@ -1,25 +1,51 @@
-import React, { useContext } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../../admin/context/userContext/index';
-import { Box, Grid, TextField, Button, Link, Avatar, Typography, Container, CssBaseline } from '@mui/material';
+import { Box, Grid, TextField, Button, Link, Avatar, Typography, Container, CssBaseline, Select } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RegisterFormSchema, RegisterFormType } from '../../forms/RegisterForm'
+import { useNavigate } from 'react-router-dom';
+import LoadingComponent from '../../../../shared/components/Loading';
+import Modal from '../../../../shared/components/Modal';
 
-const RegisterPage: React.FC = () => {
-  const  context  = useContext(UserContext)!;
+const RegisterPage = () => {
+  const { service, state }  = useContext(UserContext);
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterFormSchema),
   });
+  const navigate = useNavigate();
+  const onSubmit = useCallback((data: RegisterFormType) => {
+    const payload: RegisterFormType = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      cep: data.cep,
+      recoveryQuestion: data.recoveryQuestion,
+      paymentMethod: 'credit_card',
+      gender: 'male',
+      cpf: data.cpf.replaceAll('.', '').replace('-', '')
+    } as RegisterFormType;
+    service.createUser(payload);
+  }, [service]);
+  const [open, setOpen] = useState(false);
 
-  const onSubmit = async (data: RegisterFormType) => {
-    try {
-      await context.service.createUser(data);
-      // Handle successful registration (e.g., redirect to login)
-    } catch (error) {
-      // Handle registration error (e.g., show error message)
-    }
-  };
+  const closeModal = () => {
+    return () => setOpen(false);
+  }
+
+  useEffect(() => {
+    state.createUserRequestStatus.maybeMap({
+      succeeded: () => {
+        console.log('Usuário criado com sucesso');
+        navigate('/login');
+      },
+      failed: (error) => {
+        console.log(error);
+        setOpen(true);
+      }
+    })
+  }, [state, navigate]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -95,22 +121,24 @@ const RegisterPage: React.FC = () => {
                 required
                 fullWidth
                 label="Nome do primeiro animal de estimação"
-                id="petName"
-                {...register('petName')}
-                error={!!errors.petName}
-                helperText={errors.petName?.message}
+                id="recoveryQuestion"
+                {...register('recoveryQuestion')}
+                error={!!errors.recoveryQuestion}
+                helperText={errors.recoveryQuestion?.message}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
+              <Select
+                native
                 fullWidth
-                label="Forma de pagamento"
                 id="paymentMethod"
                 {...register('paymentMethod')}
                 error={!!errors.paymentMethod}
-                helperText={errors.paymentMethod?.message}
-              />
+              >
+                <option value="" disabled>Forma de pagamento</option>
+                <option value="credit_card">Cartão de crédito</option>
+                <option value="boleto">Boleto</option>  
+              </Select> 
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -142,6 +170,18 @@ const RegisterPage: React.FC = () => {
           </Grid>
         </Box>
       </Box>
+      {
+        state.createUserRequestStatus.maybeMap({
+          loading: () => <LoadingComponent></LoadingComponent>,
+          failed: () => (
+            <Modal open={open} closeButtonCallback={closeModal()}>
+              <Typography variant="h6" component="div">
+                Ocorreu um erro, tente novamente
+              </Typography>
+            </Modal>
+          )
+        })
+      }
     </Container>
   );
 };

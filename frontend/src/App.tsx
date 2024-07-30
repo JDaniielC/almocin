@@ -11,11 +11,16 @@ import OrderPage from "./app/home/pages/orderPage";
 import CartPage from "./app/home/pages/cartPage";
 import HistoryPage from "./app/home/pages/historyPage";
 import StatsPage from "./app/admin/pages/statsPage";
+import NotFoundPage from "./app/home/pages/notFoundPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: HomePage,
+  },
+  {
+    path: "*",
+    Component: NotFoundPage
   },
   {
     path: "/login",

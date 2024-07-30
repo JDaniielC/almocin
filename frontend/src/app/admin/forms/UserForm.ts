@@ -7,4 +7,3 @@ export const UserFormSchema = z.object({
 });
 
 export type UserFormType = z.infer<typeof UserFormSchema>;
-

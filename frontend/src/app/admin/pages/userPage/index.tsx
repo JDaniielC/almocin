@@ -36,15 +36,14 @@ const UserPage = () => {
           failed: () => <span>Erro ao carregar usuários!</span>,
           succeeded: (users) => (
             <>
-              {users.map((user) => {
+              {users.map((user, i) => {
                 return (
-                  <>
-                    <ListItem
-                      key={user.id}
-                      name={user.name}
-                      deleteBtnCallback={deleteUser(user.id)}
-                    ></ListItem>
-                  </>
+                  <ListItem
+                    key={i}
+                    name={user.name}
+                    deleteDisabled={state.deleteUserRequestStatus.isLoading()}
+                    deleteBtnCallback={deleteUser(user.id)}
+                  ></ListItem>
                 );
               })}
             </>

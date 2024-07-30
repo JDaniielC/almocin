@@ -60,7 +60,7 @@ class OrderService {
       .map((item) => new OrderModel({
         ...item,
         itemsId: menu.filter(el => item.itemsId.includes(el.id)).map(el => el.id),
-        items: menu.filter(el => item.itemsId.includes(el.id)),
+        items: menu?.filter(el => item.itemsId.includes(el.id)) ?? [],
         totalPrice: menu.filter(el => item.itemsId.includes(el.id)).reduce(
           (acc, el) => acc + el.price, 0
         ),
@@ -75,7 +75,7 @@ class OrderService {
       const allItems = await this.menuRepository.getItems();
       return new OrderModel({
         ...entity,
-        items: allItems.filter(item => entity.itemsId.includes(item.id)),
+        items: allItems?.filter(item => entity.itemsId.includes(item.id)) ?? [],
       });
     } else {
       throw new HttpNotFoundError({
@@ -94,7 +94,7 @@ class OrderService {
       ...createdOrder,
       itemsId: intemsId,
       status: OrderStatus.inCart,
-      items: allItems.filter(item => intemsId.includes(item.id)),
+      items: allItems?.filter(item => intemsId.includes(item.id)) ?? [],
     });
   }
 
@@ -124,7 +124,7 @@ class OrderService {
       const allItems = await this.menuRepository.getItems();
       return new OrderModel({
         ...entity,
-        items: allItems.filter(item => entity.itemsId.includes(item.id)),
+        items: allItems?.filter(item => entity.itemsId.includes(item.id)) ?? [],
       });
     } else {
       throw new Error('Order entity is null.');

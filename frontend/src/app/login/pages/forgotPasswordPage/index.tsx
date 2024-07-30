@@ -8,31 +8,46 @@ import Box from '@mui/material/Box';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useContext, useState } from 'react';
-import { ForgotPasswordContext } from '../../context/ForgetPasswordContext/index'; // Ajuste o caminho conforme necessário
-import { ForgotPasswordType } from '../../forms/ForgotPasswordForm'; // Ajuste o caminho conforme necessário
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { ForgotPasswordType } from '../../forms/ForgotPasswordForm';
+import { UserContext } from '../../../admin/context/userContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function EsqueceuSenhaPage() {
-  const { service } = useContext(ForgotPasswordContext); // Obtendo o serviço do contexto
+  const { state, service } = useContext(UserContext);
   const [formData, setFormData] = useState<ForgotPasswordType>({
     email: '',
     petName: '',
     newPassword: '',
   });
   const [error, setError] = useState<string | null>(null);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const navigate = useNavigate();
+  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData(prevData => ({ ...prevData, [name]: value }));
-  };
+  }, []);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await service.requestForgotPassword(formData);
+    service.forgotPassword(formData);
     alert('Senha redefinida com sucesso!');
     setError(null)
-  };
+  }, [formData, service]);
+
+  useEffect(() => {
+    state.resetPasswordRequestStatus.maybeMap({
+      failed: ({ message }) => {
+        setError(message);
+      },
+      succeeded: () => {
+        setError(null);
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      }
+    })
+  })
 
   return (
     <Container component="main" maxWidth="xs">

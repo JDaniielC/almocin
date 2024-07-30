@@ -77,7 +77,7 @@ const CategoryPage = () => {
       loading: () => loading()
     })
     state.deleteCategoryRequestStatus.maybeMap({
-      failed: (error) => setErrorMsg(error.message),
+      failed: () => setErrorMsg('Não é possível apagar uma categoria com produtos associados.'),
       loading: () => loading()
     })
   }, 
@@ -112,7 +112,6 @@ const CategoryPage = () => {
                     deleteBtnCallback={deleteCategory(category.id)}
                     editButtonCallback={onEditCategory(category.id, category.name)}
                     editDisabled={createOrEdit == 'edit' && category.id !== categoryToEdit}
-                    data-cy="list-category"
                   ></ListItem>
                 );
               })}
@@ -127,20 +126,17 @@ const CategoryPage = () => {
           value={newCategoryName}
           className={styles.createInput}
           placeholder="Nome da nova categoria"
-          data-cy="name-new-category"
         ></input>
         {createOrEdit === 'edit' ?
           <button 
             className={styles.createButton}
             name={'Editar categoria'}
             onClick={editCategory()}
-            data-cy="edit-category"
           >Editar Categoria</button>
           :
           <button 
             className={styles.createButton}
             name={'Adicionar categoria'}
-            data-cy="add-category"
             onClick={createCategory()}
             disabled={createOrEdit === 'create' && newCategoryName === ''}
           >Adicionar Categoria</button>
