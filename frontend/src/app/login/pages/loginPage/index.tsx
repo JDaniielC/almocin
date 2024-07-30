@@ -38,8 +38,8 @@ export default function LoginPage() {
       succeeded: () => {
         navigate('/');
       },
-      failed: (error) => {
-        console.log(error);
+      failed: () => {
+        setOpen(true);
       }
     })
   }, [state, navigate]);
@@ -114,7 +114,7 @@ export default function LoginPage() {
           failed: () => (
             <Modal open={open} closeButtonCallback={closeModal()}>
               <Typography variant="h6" component="div">
-                Ocorreu um erro, tente novamente
+                Email ou senha inválidos!
               </Typography>
             </Modal>
           )

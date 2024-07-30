@@ -9,9 +9,11 @@ import { listItemUser } from "../../../../shared/types/base-layout";
 import { OrderStatus } from "../../../../shared/types/order";
 
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../../admin/context/userContext";
 
 const HistoryPage = () => {
   const { service, state } = useContext(OrderContext);
+  const { state: userState } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -35,8 +37,8 @@ const HistoryPage = () => {
   }
 
   useEffect(() => {
-    service.getOrdersByUserId('user-id-1')
-  }, [service]);
+    service.getOrdersByUserId(userState.userId!)
+  }, [service, userState.userId]);
 
   return (
     <BaseLayout titlePage="Historico" listItem={listItemUser}>

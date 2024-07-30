@@ -77,7 +77,7 @@ const CategoryPage = () => {
       loading: () => loading()
     })
     state.deleteCategoryRequestStatus.maybeMap({
-      failed: (error) => setErrorMsg(error.message),
+      failed: () => setErrorMsg('Não é possível apagar uma categoria com produtos associados.'),
       loading: () => loading()
     })
   }, 
