@@ -47,6 +47,7 @@ const BaseLayout = ({ children, titlePage, listItem}: BaseLayoutProps) => {
             marginRight: '36px',
             ...(open && { display: 'none' }),
           }}
+          data-cy="menu-button"
         >
           <MenuIcon />
         </IconButton>
