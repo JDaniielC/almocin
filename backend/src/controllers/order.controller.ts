@@ -26,8 +26,15 @@ class OrderController {
       this.getOrdersByUserId(req, res)
     );
 
+    this.router.get(`${this.prefix}/:id`, (req: Request, res: Response) =>
+      this.getOrderById(req, res)
+    );
     this.router.post(this.prefix, (req: Request, res: Response) =>
       this.createOrder(req, res)
+    );
+
+    this.router.post(`${this.prefix}/add`, (req: Request, res: Response) =>
+      this.addItemToCart(req, res)
     );
 
     this.router.put(`${this.prefix}/:id`, (req: Request, res: Response) =>
@@ -91,6 +98,25 @@ class OrderController {
     return new SuccessResult({
       msg: 'Tempo de entrega calculado com sucesso',
       data: updatedOrder,
+    }).handle(res);
+  }
+
+  private async addItemToCart(req: Request, res: Response) {
+    const updatedOrder = await this.orderService.addOrder(req.body.id, req.body.userId);
+
+    return new SuccessResult({
+      msg: 'Pedido adicionado com sucesso',
+      data: updatedOrder,
+    }).handle(res);
+  }
+
+  private async getOrderById(req: Request, res: Response) {
+    const orderId = req.params.id;
+    const order = await this.orderService.getOrder(orderId);
+
+    return new SuccessResult({
+      msg: Result.transformRequestOnMsg(req),
+      data: order,
     }).handle(res);
   }
 }

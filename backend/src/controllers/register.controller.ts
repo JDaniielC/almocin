@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import { validateCep, validateEmail, validatePassword, validateRequiredFields } from '../utils/validation/validation';
 import { ValidationMessages } from '../utils/validation/validationMessages';
 import { HttpBadRequestError, HttpNotFoundError } from '../utils/errors/http.error';
+import { FailureResult, Result, SuccessResult } from '../utils/result';
 
 class RegisterController {
   private prefix: string = '/register';
@@ -31,27 +32,31 @@ class RegisterController {
     const fieldsToValidate = { name, email, gender, paymentMethod, cpf, cep, password, recoveryQuestion };
 
     if (!validateRequiredFields(fieldsToValidate)) {
-      return res.status(400).json({
+      return new FailureResult({
         msg: ValidationMessages.REQUIRED_FIELDS,
-      });
+        code: 400
+      }).handle(res);
     }
 
     if (!validateCep(cep)) {
-      return res.status(400).json({
+      return new FailureResult({
         msg: ValidationMessages.INVALID_CEP,
-      });
+        code: 400
+      }).handle(res);
     }
 
     if (!validateEmail(email)) {
-      return res.status(400).json({
+      return new FailureResult({
         msg: ValidationMessages.INVALID_EMAIL,
-      });
+        code: 400
+      }).handle(res);
     }
 
     if (!validatePassword(password)) {
-      return res.status(400).json({
+      return new FailureResult({
         msg: ValidationMessages.INVALID_PASSWORD,
-      });
+        code: 400
+      }).handle(res);
     }
 
     try {
@@ -69,83 +74,88 @@ class RegisterController {
         recoveryQuestion,
       }));
 
-      return res.status(201).json({
+      return new SuccessResult({
         msg: ValidationMessages.USER_CREATED_SUCCESS,
         data: newUser,
-      });
+      }).handle(res);
     } catch (error) {
       const msgCode = (error as HttpBadRequestError).msgCode;
       if (msgCode === ValidationMessages.EMAIL_ALREADY_EXISTS) {
-        return res.status(400).json({
+        return new FailureResult({
           msg: ValidationMessages.EMAIL_ALREADY_EXISTS,
-        });
+          code: 400
+        }).handle(res);
       }
 
       if (msgCode === ValidationMessages.CPF_ALREADY_EXISTS) {
-        return res.status(400).json({
+        return new FailureResult({
           msg: ValidationMessages.CPF_ALREADY_EXISTS,
-        });
+          code: 400
+        }).handle(res);
       }
 
-      return res.status(500).json({
+      return new FailureResult({
         msg: ValidationMessages.UNEXPECTED_ERROR,
-      });
+        code: 500,
+      }).handle(res);
     }
   }
 
   private async getUsers(req: Request, res: Response) {
     try {
       const users = await this.registerService.getUsers();
-      return res.status(200).json({
-        msg: ValidationMessages.USERS_RETRIEVED_SUCCESS,
+      return new SuccessResult({
+        msg: Result.transformRequestOnMsg(req),
+        msgCode: ValidationMessages.USERS_RETRIEVED_SUCCESS,
         data: users,
-      });
+      }).handle(res);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({
+      return new FailureResult({
         msg: ValidationMessages.UNEXPECTED_ERROR,
-      });
+        code: 500,
+      }).handle(res);
     }
   }
 
   private async getUser(req: Request, res: Response) {
     try {
       const user = await this.registerService.getUser(req.params.id);
-      return res.status(200).json({
+      return new SuccessResult({
         msg: ValidationMessages.USER_RETRIEVED_SUCCESS,
         data: user,
-      });
+      }).handle(res);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        msg: ValidationMessages.UNEXPECTED_ERROR,
-      });
+      const { msg } = error as HttpNotFoundError;
+      return new FailureResult({
+        msg,
+        code: 404,
+      }).handle(res);
     }
   }
 
   private async updateUser(req: Request, res: Response) {
     try {
       const updatedUser = await this.registerService.updateUser(req.params.id, new UserEntity(req.body));
-      return res.status(200).json({
+      return new SuccessResult({
         msg: ValidationMessages.USER_UPDATED_SUCCESS,
         data: updatedUser,
-      });
+      }).handle(res);
     } catch (error) {
-      // Verifica o tipo de erro e envia uma resposta adequada
       if (error instanceof HttpNotFoundError) {
-        return res.status(404).json({
+        return new FailureResult({
           msg: error.message,
-        });
+          code: 404,
+        }).handle(res);
       } else if (error instanceof HttpBadRequestError) {
-        return res.status(400).json({
+        return new FailureResult({
           msg: error.message,
-        });
+          code: 400,
+        }).handle(res);
       } else {
-        // Se for um erro desconhecido, retorna um erro 500
-        console.error(error);
-        return res.status(500).json({
+        return new FailureResult({
           msg: ValidationMessages.UNEXPECTED_ERROR,
-        });
+          code: 500,
+        }).handle(res);
       }
     }
   } 
@@ -153,14 +163,15 @@ class RegisterController {
   private async deleteUser(req: Request, res: Response) {
     try {
       await this.registerService.deleteUser(req.params.id);
-      return res.status(200).json({
+      return new SuccessResult({
         msg: ValidationMessages.USER_DELETED_SUCCESS,
-      });
+      }).handle(res);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        msg: ValidationMessages.UNEXPECTED_ERROR,
-      });
+      const { msg } = error as HttpNotFoundError;
+      return new FailureResult({
+        msg,
+        code: 404,
+      }).handle(res);
     }
   }
 }

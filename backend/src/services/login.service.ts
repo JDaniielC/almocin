@@ -1,6 +1,4 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { Request } from 'express';
 import { HttpNotFoundError,HttpBadRequestError } from '../utils/errors/http.error';
 import UserRepository from '../repositories/user.repository';
 import { generateToken } from '../utils/auth/generateToken';
@@ -12,7 +10,10 @@ class LoginService {
     this.userRepository = userRepository;
   }
 
-  public async login(email: string, password: string): Promise<string> {
+  public async login(email: string, password: string): Promise<{
+    token: string;
+    userId: string;
+  }> {
     const user = await this.userRepository.findOneByEmail(email);
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
@@ -22,22 +23,12 @@ class LoginService {
     // Generate JWT token
     const token = generateToken(user.id);
 
-    return token;
+    return {
+      token,
+      userId: user.id
+    };
   }
 
-  public static getUserIdFromRequest(req: Request): string | null {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-      return null;
-    }
-
-    try {
-      const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET || 'defaultSecret');
-      return decodedToken.userId;
-    } catch (error) {
-      return null;
-    }
-  }
   public async resetPassword(email: string, recoveryQuestion: string, newPassword: string): Promise<void> {
     const user = await this.userRepository.findOneByEmail(email);
     if (!user) {

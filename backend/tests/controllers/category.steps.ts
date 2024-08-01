@@ -36,7 +36,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });
@@ -75,7 +74,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });
@@ -116,7 +114,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });
@@ -157,7 +154,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });
@@ -197,7 +193,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });
@@ -238,7 +233,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });
@@ -277,7 +271,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });
@@ -312,7 +305,6 @@ defineFeature(feature, test => {
         await mockCategoryRepository.createCategory({
           id: row.id,
           name: row.name,
-          itemsId: [],
           active: true,
           createdAt: new Date(),
         });

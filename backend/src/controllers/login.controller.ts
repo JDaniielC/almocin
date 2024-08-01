@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import LoginService from '../services/login.service';
 import { HttpError } from '../utils/errors/http.error';
 import limiterMiddleware from '../core/limiter';
+import { FailureResult, Result, SuccessResult } from '../utils/result';
 
 class LoginController {
   public prefix: string = '/login';
@@ -25,11 +26,14 @@ class LoginController {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ msg: 'Email and password are required' });
+      return new FailureResult({
+        msg: 'Email and password are required',
+        code: 400
+      }).handle(res);
     }
 
     try {
-      const token = await this.loginService.login(email, password);
+      const { token, userId } = await this.loginService.login(email, password);
 
       res.cookie('session_token', token, {
         httpOnly: true,
@@ -38,39 +42,46 @@ class LoginController {
         secure: process.env.NODE_ENV === 'production',
       });
 
-      return res.status(200).json({ msg: 'Login successful', data: { token } });
+      return new SuccessResult({
+        msg: 'Login successful',
+        data: { token, userId }
+      }).handle(res);
     } catch (error) {
       if (error instanceof HttpError) {
-        return res.status(error.status).json({ msg: error.msg });
+        return new FailureResult({ msg: error.msg, code: 400 }).handle(res);
       } else {
-        console.error(error); // Log the unexpected error
-        return res.status(500).json({ msg: 'An unexpected error occurred' });
+        return new FailureResult({ msg: 'An unexpected error occurred' }).handle(res);
       }
     }
   }
 
   private logout(req: Request, res: Response) {
     res.clearCookie('session_token');
-    return res.status(200).json({ msg: 'Logout successful' });
+    return new SuccessResult({
+      msg: 'Logout successful',
+      data: Result.transformRequestOnMsg(req)
+    }).handle(res);
   }
 
   private async forgotPassword(req: Request, res: Response) {
     const { email, recoveryQuestion, newPassword } = req.body;
 
     if (!email || !recoveryQuestion || !newPassword) {
-      return res.status(400).json({ msg: 'Email, recovery question, and new password are required' });
+      return new FailureResult({
+        msg: 'Email, recovery question, and new password are required',
+        code: 400
+      }).handle(res);
     }
 
     try {
       await this.loginService.resetPassword(email, recoveryQuestion, newPassword);
 
-      return res.status(200).json({ msg: 'Password reset successful' });
+      return new SuccessResult({ msg: 'Password reset successful' }).handle(res);
     } catch (error) {
       if (error instanceof HttpError) {
-        return res.status(error.status).json({ msg: error.msg });
+        return new FailureResult({ msg: error.msg, code: 400 }).handle(res);
       } else {
-        console.error(error); // Log the unexpected error
-        return res.status(500).json({ msg: 'An unexpected error occurred' });
+        return new FailureResult({ msg: 'An unexpected error occurred' }).handle(res);
       }
     }
   }
